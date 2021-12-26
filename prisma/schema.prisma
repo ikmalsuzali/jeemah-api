@@ -1,0 +1,204 @@
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+  // previewFeatures = []
+}
+
+generator dbml {
+  provider = "prisma-dbml-generator"
+}
+
+model Address {
+  id         String    @id @default(cuid())
+  address    String
+  postcode   String?
+  city_id    String    @unique
+  city       City      @relation(fields: [city_id], references: [id])
+  longitude  Float?
+  latitude   Float?
+  created_at DateTime  @default(now())
+  updated_at DateTime  @updatedAt
+  created_by String
+  updated_by String
+  User       User?
+  Company    Company[]
+  Project    Project[]
+}
+
+model AdminProject {
+  user_id    String
+  user       User     @relation(fields: [user_id], references: [id])
+  project_id String
+  project    Project  @relation(fields: [project_id], references: [id])
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
+  created_by String
+  updated_by String
+
+  @@id([user_id, project_id])
+}
+
+// model Category {
+//   id         String   @id @default(cuid())
+//   name       String
+//   created_at DateTime @default(now())
+//   updated_at DateTime @updatedAt
+//   created_by String
+//   updated_by String
+// }
+
+model City {
+  id         String   @id @default(cuid())
+  name       String
+  state_id   String
+  state      State    @relation(fields: [state_id], references: [id])
+  country_id String
+  country    Country  @relation(fields: [country_id], references: [id])
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
+  created_by String
+  updated_by String
+  Address    Address?
+}
+
+model Country {
+  id         String   @id @default(cuid())
+  name       String
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
+  created_by String
+  updated_by String
+  City       City[]
+}
+
+model Company {
+  id              String   @id @default(cuid())
+  name            String
+  registration_no String?
+  phone_number    String?
+  email           String
+  description     String?
+  address_id      String?  @unique
+  address         Address? @relation(fields: [address_id], references: [id])
+  created_at      DateTime @default(now())
+  updated_at      DateTime @updatedAt
+  created_by      String
+  updated_by      String
+}
+
+model PostCategory {
+  id          String   @id @default(cuid())
+  name        String
+  description String?
+  created_at  DateTime @default(now())
+  updated_at  DateTime @updatedAt
+  created_by  String
+  updated_by  String
+  Post        Post[]
+}
+
+model Post {
+  id               String       @id @default(cuid())
+  name             String
+  description      String?
+  post_category    PostCategory @relation(fields: [post_category_id], references: [id])
+  post_category_id String
+  start_date       DateTime
+  end_date         DateTime
+  User             User?        @relation(fields: [user_id], references: [id])
+  user_id          String?
+  Project          Project      @relation(fields: [project_id], references: [id])
+  project_id       String
+  created_at       DateTime     @default(now())
+  updated_at       DateTime     @updatedAt
+  created_by       String
+  updated_by       String
+}
+
+model Project {
+  id                  String                @id @default(cuid())
+  name                String
+  registration_no     String?
+  phone_number        String?
+  email               String
+  description         String?
+  address_id          String?               @unique
+  address             Address?              @relation(fields: [address_id], references: [id])
+  created_at          DateTime              @default(now())
+  updated_at          DateTime              @updatedAt
+  created_by          String
+  updated_by          String
+  Post                Post[]
+  UserProjectFollower UserProjectFollower[]
+  AdminProjects       AdminProject[]
+
+}
+
+model State {
+  id         String   @id @default(cuid())
+  name       String
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
+  created_by String
+  updated_by String
+  City       City[]
+}
+
+model UserProjectFollower {
+  user_id    String
+  user       User     @relation(fields: [user_id], references: [id])
+  project_id String
+  project    Project  @relation(fields: [project_id], references: [id])
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
+  created_by String
+  updated_by String
+
+  @@id([user_id, project_id])
+}
+
+model User {
+  id            String                @id @default(cuid())
+  email         String                @unique
+  password      String
+  first_name    String?
+  last_name     String?
+  phone_number  String
+  status        UserStatus
+  address_id    String?               @unique
+  address       Address?              @relation(fields: [address_id], references: [id])
+  role          Role
+  login_attempt Int                   @default(0)
+  created_at    DateTime              @default(now())
+  updated_at    DateTime              @updatedAt
+  created_by    String
+  updated_by    String
+  Posts         Post[]
+  UserProjects  UserProjectFollower[]
+  AdminProjects AdminProject[]
+}
+
+model UserInvite {
+  id         String   @id @default(cuid())
+  email      String
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
+  created_by String
+  updated_by String
+
+}
+
+enum Role {
+  SUPERADMIN
+  ADMIN
+  USER
+}
+
+enum UserStatus {
+  ACTIVE
+  INACTIVE
+}
