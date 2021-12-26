@@ -168,18 +168,18 @@ model User {
   first_name    String?
   last_name     String?
   phone_number  String
-  status        UserStatus
+  status        UserStatus?           @default(ACTIVE)
   address_id    String?               @unique
   address       Address?              @relation(fields: [address_id], references: [id])
   role          Role
   login_attempt Int                   @default(0)
   created_at    DateTime              @default(now())
   updated_at    DateTime              @updatedAt
-  created_by    String
-  updated_by    String
-  Posts         Post[]
-  UserProjects  UserProjectFollower[]
-  AdminProjects AdminProject[]
+  created_by    String?
+  updated_by    String?
+  posts         Post[]
+  user_projects  UserProjectFollower[]
+  admin_projects AdminProject[]
 }
 
 model UserInvite {

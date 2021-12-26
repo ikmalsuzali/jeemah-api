@@ -4,6 +4,7 @@
   "sourceRoot": "src",
   "compilerOptions": {
     "plugins": [
+      { "assets": ["mail/templates/**/*"],  "watchAssets": true},
       "@nestjs/swagger/plugin",
       "@nestjs/graphql/plugin"
     ]

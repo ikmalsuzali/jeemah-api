@@ -1,4 +1,5 @@
 import { PrismaClient } from '@prisma/client';
+import * as faker from 'faker';
 
 const prisma = new PrismaClient();
 
@@ -6,49 +7,24 @@ async function main() {
   await prisma.user.deleteMany();
   await prisma.post.deleteMany();
 
-  console.log('Seeding...');
+  console.log('Seeding.......');
 
-  const user1 = await prisma.user.create({
-    data: {
-      email: 'lisa@simpson.com',
-      firstname: 'Lisa',
-      lastname: 'Simpson',
-      password: '$2b$10$EpRnTzVlqHNP0.fUbXUwSOyuiXe/QLSUG6xNekdHgTGmrpHEfIoxm', // secret42
-      role: 'USER',
-      posts: {
-        create: {
-          title: 'Join us for Prisma Day 2019 in Berlin',
-          content: 'https://www.prisma.io/day/',
-          published: true,
-        },
+  for (let i = 0; i < 100; i++) {
+    const user = await prisma.user.create({
+      data: {
+        email: faker.internet.email(),
+        first_name: faker.name.firstName(),
+        last_name: faker.name.lastName(),
+        phone_number: faker.phone.phoneNumber(),
+        password:
+          '$2b$10$EpRnTzVlqHNP0.fUbXUwSOyuiXe/QLSUG6xNekdHgTGmrpHEfIoxm', // secret42
+        role: faker.random.arrayElement(['USER', 'ADMIN']),
       },
-    },
-  });
-  const user2 = await prisma.user.create({
-    data: {
-      email: 'bart@simpson.com',
-      firstname: 'Bart',
-      lastname: 'Simpson',
-      role: 'ADMIN',
-      password: '$2b$10$EpRnTzVlqHNP0.fUbXUwSOyuiXe/QLSUG6xNekdHgTGmrpHEfIoxm', // secret42
-      posts: {
-        create: [
-          {
-            title: 'Subscribe to GraphQL Weekly for community news',
-            content: 'https://graphqlweekly.com/',
-            published: true,
-          },
-          {
-            title: 'Follow Prisma on Twitter',
-            content: 'https://twitter.com/prisma',
-            published: false,
-          },
-        ],
-      },
-    },
-  });
+    });
 
-  console.log({ user1, user2 });
+    console.log(user);
+  }
+
 }
 
 main()
