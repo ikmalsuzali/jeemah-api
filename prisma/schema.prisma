@@ -16,17 +16,17 @@ model Address {
   id         String    @id @default(cuid())
   address    String
   postcode   String?
-  city_id    String    @unique
+  city_id    String   
   city       City      @relation(fields: [city_id], references: [id])
   longitude  Float?
   latitude   Float?
   created_at DateTime  @default(now())
   updated_at DateTime  @updatedAt
-  created_by String
-  updated_by String
+  created_by String?
+  updated_by String?
   User       User?
-  Company    Company[]
-  Project    Project[]
+  Company    Company?
+  Project    Project?
 }
 
 model AdminProject {
@@ -36,32 +36,23 @@ model AdminProject {
   project    Project  @relation(fields: [project_id], references: [id])
   created_at DateTime @default(now())
   updated_at DateTime @updatedAt
-  created_by String
-  updated_by String
+  created_by String?
+  updated_by String?
 
   @@id([user_id, project_id])
 }
 
-// model Category {
-//   id         String   @id @default(cuid())
-//   name       String
-//   created_at DateTime @default(now())
-//   updated_at DateTime @updatedAt
-//   created_by String
-//   updated_by String
-// }
-
 model City {
   id         String   @id @default(cuid())
   name       String
-  state_id   String
-  state      State    @relation(fields: [state_id], references: [id])
-  country_id String
-  country    Country  @relation(fields: [country_id], references: [id])
+  state_id   String?
+  state      State?    @relation(fields: [state_id], references: [id])
+  country_id String?
+  country    Country?  @relation(fields: [country_id], references: [id])
   created_at DateTime @default(now())
   updated_at DateTime @updatedAt
-  created_by String
-  updated_by String
+  created_by String?
+  updated_by String?
   Address    Address?
 }
 
@@ -70,8 +61,8 @@ model Country {
   name       String
   created_at DateTime @default(now())
   updated_at DateTime @updatedAt
-  created_by String
-  updated_by String
+  created_by String?
+  updated_by String?
   City       City[]
 }
 
@@ -86,8 +77,8 @@ model Company {
   address         Address? @relation(fields: [address_id], references: [id])
   created_at      DateTime @default(now())
   updated_at      DateTime @updatedAt
-  created_by      String
-  updated_by      String
+  created_by      String?
+  updated_by      String?
 }
 
 model PostCategory {
@@ -96,8 +87,8 @@ model PostCategory {
   description String?
   created_at  DateTime @default(now())
   updated_at  DateTime @updatedAt
-  created_by  String
-  updated_by  String
+  created_by  String?
+  updated_by  String?
   Post        Post[]
 }
 
@@ -115,8 +106,8 @@ model Post {
   project_id       String
   created_at       DateTime     @default(now())
   updated_at       DateTime     @updatedAt
-  created_by       String
-  updated_by       String
+  created_by       String?
+  updated_by       String?
 }
 
 model Project {
@@ -130,8 +121,8 @@ model Project {
   address             Address?              @relation(fields: [address_id], references: [id])
   created_at          DateTime              @default(now())
   updated_at          DateTime              @updatedAt
-  created_by          String
-  updated_by          String
+  created_by          String?
+  updated_by          String?
   Post                Post[]
   UserProjectFollower UserProjectFollower[]
   AdminProjects       AdminProject[]
@@ -143,8 +134,8 @@ model State {
   name       String
   created_at DateTime @default(now())
   updated_at DateTime @updatedAt
-  created_by String
-  updated_by String
+  created_by String?
+  updated_by String?
   City       City[]
 }
 
@@ -155,8 +146,8 @@ model UserProjectFollower {
   project    Project  @relation(fields: [project_id], references: [id])
   created_at DateTime @default(now())
   updated_at DateTime @updatedAt
-  created_by String
-  updated_by String
+  created_by String?
+  updated_by String?
 
   @@id([user_id, project_id])
 }
@@ -187,8 +178,8 @@ model UserInvite {
   email      String
   created_at DateTime @default(now())
   updated_at DateTime @updatedAt
-  created_by String
-  updated_by String
+  created_by String?
+  updated_by String?
 
 }
 

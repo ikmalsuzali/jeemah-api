@@ -6,17 +6,17 @@ Table Address {
   id String [pk]
   address String [not null]
   postcode String
-  city_id String [unique, not null]
+  city_id String [not null]
   city City [not null]
   longitude Float
   latitude Float
   created_at DateTime [default: `now()`, not null]
   updated_at DateTime [not null]
-  created_by String [not null]
-  updated_by String [not null]
+  created_by String
+  updated_by String
   User User
-  Company Company [not null]
-  Project Project [not null]
+  Company Company
+  Project Project
 }
 
 Table AdminProject {
@@ -26,8 +26,8 @@ Table AdminProject {
   project Project [not null]
   created_at DateTime [default: `now()`, not null]
   updated_at DateTime [not null]
-  created_by String [not null]
-  updated_by String [not null]
+  created_by String
+  updated_by String
 
   indexes {
     (user_id, project_id) [pk]
@@ -37,14 +37,14 @@ Table AdminProject {
 Table City {
   id String [pk]
   name String [not null]
-  state_id String [not null]
-  state State [not null]
-  country_id String [not null]
-  country Country [not null]
+  state_id String
+  state State
+  country_id String
+  country Country
   created_at DateTime [default: `now()`, not null]
   updated_at DateTime [not null]
-  created_by String [not null]
-  updated_by String [not null]
+  created_by String
+  updated_by String
   Address Address
 }
 
@@ -53,8 +53,8 @@ Table Country {
   name String [not null]
   created_at DateTime [default: `now()`, not null]
   updated_at DateTime [not null]
-  created_by String [not null]
-  updated_by String [not null]
+  created_by String
+  updated_by String
   City City [not null]
 }
 
@@ -69,8 +69,8 @@ Table Company {
   address Address
   created_at DateTime [default: `now()`, not null]
   updated_at DateTime [not null]
-  created_by String [not null]
-  updated_by String [not null]
+  created_by String
+  updated_by String
 }
 
 Table PostCategory {
@@ -79,8 +79,8 @@ Table PostCategory {
   description String
   created_at DateTime [default: `now()`, not null]
   updated_at DateTime [not null]
-  created_by String [not null]
-  updated_by String [not null]
+  created_by String
+  updated_by String
   Post Post [not null]
 }
 
@@ -98,8 +98,8 @@ Table Post {
   project_id String [not null]
   created_at DateTime [default: `now()`, not null]
   updated_at DateTime [not null]
-  created_by String [not null]
-  updated_by String [not null]
+  created_by String
+  updated_by String
 }
 
 Table Project {
@@ -113,8 +113,8 @@ Table Project {
   address Address
   created_at DateTime [default: `now()`, not null]
   updated_at DateTime [not null]
-  created_by String [not null]
-  updated_by String [not null]
+  created_by String
+  updated_by String
   Post Post [not null]
   UserProjectFollower UserProjectFollower [not null]
   AdminProjects AdminProject [not null]
@@ -125,8 +125,8 @@ Table State {
   name String [not null]
   created_at DateTime [default: `now()`, not null]
   updated_at DateTime [not null]
-  created_by String [not null]
-  updated_by String [not null]
+  created_by String
+  updated_by String
   City City [not null]
 }
 
@@ -137,8 +137,8 @@ Table UserProjectFollower {
   project Project [not null]
   created_at DateTime [default: `now()`, not null]
   updated_at DateTime [not null]
-  created_by String [not null]
-  updated_by String [not null]
+  created_by String
+  updated_by String
 
   indexes {
     (user_id, project_id) [pk]
@@ -171,8 +171,8 @@ Table UserInvite {
   email String [not null]
   created_at DateTime [default: `now()`, not null]
   updated_at DateTime [not null]
-  created_by String [not null]
-  updated_by String [not null]
+  created_by String
+  updated_by String
 }
 
 Enum Role {
@@ -196,7 +196,7 @@ Ref: City.state_id > State.id
 
 Ref: City.country_id > Country.id
 
-Ref: Company.address_id > Address.id
+Ref: Company.address_id - Address.id
 
 Ref: Post.post_category_id > PostCategory.id
 
@@ -204,7 +204,7 @@ Ref: Post.user_id > User.id
 
 Ref: Post.project_id > Project.id
 
-Ref: Project.address_id > Address.id
+Ref: Project.address_id - Address.id
 
 Ref: UserProjectFollower.user_id > User.id
 
