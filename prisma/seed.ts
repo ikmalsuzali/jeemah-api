@@ -29,60 +29,26 @@ async function main() {
     },
   });
 
-
   // MALAYSIA LOCALITY
   for (const state of locality.state) {
     const stateName: any = state.name;
-    const city: any = state.city ;
+    const city: any = state.city;
     for (const currentCity of city) {
-        const cityName: any = currentCity.name;
-        const state = await prisma.state.findFirst({
-          where: {
-            name: stateName
-          }
-        })
-        console.log('state',state);
-        try {
-          if (!state){
-             await prisma.city.create({
-               data: {
-                 name: cityName,
-                 state: {
-                    create: {
-                       name: stateName,
-                    },  
-                   },
-                 country: {
-                   connect: { id: country.id },
-                 },
-               },
-             });
-          } else {
-             await prisma.city.create({
-               data: {
-                 name: cityName,
-                 state: {
-                   connect: {
-                      id: state.id,
-                   },
-                 },
-                 country: {
-                   connect: { id: country.id },
-                 },
-               },
-             });
-          }
+      const cityName: any = currentCity.name;
+      const state = await prisma.state.findFirst({
+        where: {
+          name: stateName,
+        },
+      });
+      // console.log('state',state);
+      try {
+        if (!state) {
           await prisma.city.create({
             data: {
               name: cityName,
               state: {
-                connectOrCreate: {
-                  create: {
-                    name: stateName,
-                  },
-                  where: {
-                    id: state.id,
-                  },
+                create: {
+                  name: stateName,
                 },
               },
               country: {
@@ -90,13 +56,44 @@ async function main() {
               },
             },
           });
-        } catch (error) {
-          console.log(error)
+        } else {
+          await prisma.city.create({
+            data: {
+              name: cityName,
+              state: {
+                connect: {
+                  id: state.id,
+                },
+              },
+              country: {
+                connect: { id: country.id },
+              },
+            },
+          });
         }
+        await prisma.city.create({
+          data: {
+            name: cityName,
+            state: {
+              connectOrCreate: {
+                create: {
+                  name: stateName,
+                },
+                where: {
+                  id: state.id,
+                },
+              },
+            },
+            country: {
+              connect: { id: country.id },
+            },
+          },
+        });
+      } catch (error) {
+        console.log(error);
+      }
     }
   }
-
-  return;
 
   for (let i = 0; i < 100; i++) {
     const user = await prisma.user.create({
@@ -111,22 +108,34 @@ async function main() {
       },
     });
 
-    console.log(user);
+    // console.log(user);
+  }
+
+  for (let i = 0; i < 100; i++) {
+        const randomCity =
+      await prisma.$queryRaw`SELECT * from nest_db."City" ORDER BY RANDOM() LIMIT 1`;
+
+    const address = await prisma.address.create({
+      data: {
+        address: faker.address.streetAddress(),
+        postcode: faker.address.zipCode(),
+        city: {
+          connect: {
+            id: randomCity[0].id
+          }
+        },
+        longitude: parseFloat(faker.address.longitude()),
+        latitude: parseFloat(faker.address.latitude()),
+      },
+    });
+
+    console.log(address);
   }
 }
 
-// for (let i = 0; i < 100; i++) {
-//   const address = await prisma.address.create({
-//     data: {
-//       address: faker.address.streetAddress(),
-//       postcode: faker.address.zipCode(),
-//       longitude: parseFloat(faker.address.longitude()),
-//       latitude: parseFloat(faker.address.latitude()),
-//     },
-//   });
 
-//   console.log(address);
-// }
+
+
 
 main()
   .catch((e) => console.error(e))

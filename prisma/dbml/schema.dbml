@@ -88,13 +88,15 @@ Table Post {
   id String [pk]
   name String [not null]
   description String
-  post_category PostCategory [not null]
+  post_base_category PostBaseCategory
+  post_view_type PostViewType [not null, default: 'ALL']
+  post_category PostCategory
   post_category_id String [not null]
   start_date DateTime [not null]
   end_date DateTime [not null]
   User User
   user_id String
-  Project Project [not null]
+  project Project [not null]
   project_id String [not null]
   created_at DateTime [default: `now()`, not null]
   updated_at DateTime [not null]
@@ -184,6 +186,18 @@ Enum Role {
 Enum UserStatus {
   ACTIVE
   INACTIVE
+}
+
+Enum PostBaseCategory {
+  EVENT
+  USEFUL_CONTACT_NO
+  LINKS
+}
+
+Enum PostViewType {
+  FOLLOWERS
+  INTERNAL
+  ALL
 }
 
 Ref: Address.city_id - City.id

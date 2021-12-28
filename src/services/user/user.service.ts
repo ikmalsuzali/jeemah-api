@@ -1,8 +1,8 @@
 import { PrismaService } from 'nestjs-prisma';
 import { Injectable, BadRequestException } from '@nestjs/common';
-import { PasswordService } from './password.service';
-import { ChangePasswordInput } from '../resolvers/user/dto/change-password.input';
-import { UpdateUserInput } from '../resolvers/user/dto/update-user.input';
+import { PasswordService } from '../password.service';
+import { ChangePasswordInput } from '../../resolvers/user/dto/change-password.input';
+import { UpdateUserInput } from '../../resolvers/user/dto/update-user.input';
 
 @Injectable()
 export class UserService {
@@ -46,8 +46,7 @@ export class UserService {
     });
   }
 
-  async updateProjectFollowers(){}
+  async updateProjectFollowers() {}
 
-  async getProjectsFollowing(){}
-
+  async getProjectsFollowing() {}
 }

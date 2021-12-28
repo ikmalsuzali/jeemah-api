@@ -3,11 +3,11 @@ import { Order } from '../../common/order/order';
 
 export enum PostOrderField {
   id = 'id',
-  createdAt = 'createdAt',
-  updatedAt = 'updatedAt',
-  published = 'published',
-  title = 'title',
-  content = 'content',
+  startDate = 'start_date',
+  createdAt = 'created_at',
+  updatedAt = 'updated_at',
+  postCategory = 'post_category',
+  name = 'name',
 }
 
 registerEnumType(PostOrderField, {

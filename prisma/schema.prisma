@@ -96,13 +96,15 @@ model Post {
   id               String       @id @default(cuid())
   name             String
   description      String?
-  post_category    PostCategory @relation(fields: [post_category_id], references: [id])
+  post_base_category PostBaseCategory?
+  post_view_type   PostViewType @default(ALL)
+  post_category    PostCategory? @relation(fields: [post_category_id], references: [id])
   post_category_id String
-  start_date       DateTime
-  end_date         DateTime
+  start_date       DateTime?
+  end_date         DateTime?
   User             User?        @relation(fields: [user_id], references: [id])
   user_id          String?
-  Project          Project      @relation(fields: [project_id], references: [id])
+  project          Project      @relation(fields: [project_id], references: [id])
   project_id       String
   created_at       DateTime     @default(now())
   updated_at       DateTime     @updatedAt
@@ -180,7 +182,6 @@ model UserInvite {
   updated_at DateTime @updatedAt
   created_by String?
   updated_by String?
-
 }
 
 enum Role {
@@ -192,4 +193,16 @@ enum Role {
 enum UserStatus {
   ACTIVE
   INACTIVE
+}
+
+enum PostBaseCategory {
+  EVENT
+  USEFUL_CONTACT_NO
+  LINKS
+}
+
+enum PostViewType {
+  FOLLOWERS
+  INTERNAL
+  ALL
 }
