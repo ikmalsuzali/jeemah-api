@@ -5,6 +5,8 @@ const locality = require('./seed/locality-malaysia.json');
 const prisma = new PrismaClient();
 
 async function main() {
+  try {
+  await prisma.address.deleteMany();
   await prisma.user.deleteMany();
   await prisma.post.deleteMany();
   await prisma.country.deleteMany();
@@ -33,6 +35,14 @@ async function main() {
   for (const state of locality.state) {
     const stateName: any = state.name;
     const city: any = state.city;
+    await prisma.state.create({
+      data: {
+        name: stateName,
+        country: {
+          connect: { id: country.id },
+        },
+      },
+    });
     for (const currentCity of city) {
       const cityName: any = currentCity.name;
       const state = await prisma.state.findFirst({
@@ -40,7 +50,6 @@ async function main() {
           name: stateName,
         },
       });
-      // console.log('state',state);
       try {
         if (!state) {
           await prisma.city.create({
@@ -71,24 +80,6 @@ async function main() {
             },
           });
         }
-        await prisma.city.create({
-          data: {
-            name: cityName,
-            state: {
-              connectOrCreate: {
-                create: {
-                  name: stateName,
-                },
-                where: {
-                  id: state.id,
-                },
-              },
-            },
-            country: {
-              connect: { id: country.id },
-            },
-          },
-        });
       } catch (error) {
         console.log(error);
       }
@@ -131,11 +122,10 @@ async function main() {
 
     console.log(address);
   }
+  } catch(error) {
+    console.log(error)
+  }
 }
-
-
-
-
 
 main()
   .catch((e) => console.error(e))

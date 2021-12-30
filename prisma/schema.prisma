@@ -63,7 +63,8 @@ model Country {
   updated_at DateTime @updatedAt
   created_by String?
   updated_by String?
-  City       City[]
+  cities     City[]
+  states     State[]
 }
 
 model Company {
@@ -131,14 +132,17 @@ model Project {
 
 }
 
+
 model State {
   id         String   @id @default(cuid())
   name       String
+  country_id String?
+  country    Country?  @relation(fields: [country_id], references: [id])
   created_at DateTime @default(now())
   updated_at DateTime @updatedAt
   created_by String?
   updated_by String?
-  City       City[]
+  cities     City[]
 }
 
 model UserProjectFollower {
@@ -165,7 +169,6 @@ model User {
   address_id    String?               @unique
   address       Address?              @relation(fields: [address_id], references: [id])
   role          Role
-  login_attempt Int                   @default(0)
   created_at    DateTime              @default(now())
   updated_at    DateTime              @updatedAt
   created_by    String?

@@ -2,6 +2,47 @@
 # THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
 # ------------------------------------------------------
 
+type Address {
+  address: String!
+  city: City!
+  company: Company!
+
+  """Identifies the date and time when the object was created."""
+  created_at: Date!
+
+  """Identifies the user id who created."""
+  created_by: String!
+  id: ID!
+  latitude: Int!
+  longitude: Int!
+  postcode: String
+  project: Project!
+
+  """Identifies the date and time when the object was last updated."""
+  updated_at: Date!
+
+  """Identifies the user id who updated."""
+  updated_by: String!
+  user: User!
+}
+
+type AdminProject {
+  """Identifies the date and time when the object was created."""
+  created_at: Date!
+
+  """Identifies the user id who created."""
+  created_by: String!
+  id: ID!
+  project: Project!
+
+  """Identifies the date and time when the object was last updated."""
+  updated_at: Date!
+
+  """Identifies the user id who updated."""
+  updated_by: String!
+  user: User!
+}
+
 type Auth {
   """JWT access token"""
   accessToken: String!
@@ -16,9 +57,62 @@ input ChangePasswordInput {
   oldPassword: String!
 }
 
-input CreatePostInput {
-  content: String!
-  title: String!
+type City {
+  addresses: [Address!]!
+  country: Country!
+
+  """Identifies the date and time when the object was created."""
+  created_at: Date!
+
+  """Identifies the user id who created."""
+  created_by: String!
+  id: ID!
+  name: String!
+  state: State!
+
+  """Identifies the date and time when the object was last updated."""
+  updated_at: Date!
+
+  """Identifies the user id who updated."""
+  updated_by: String!
+}
+
+type Company {
+  address: Address
+
+  """Identifies the date and time when the object was created."""
+  created_at: Date!
+
+  """Identifies the user id who created."""
+  created_by: String!
+  description: String
+  email: String!
+  id: ID!
+  name: String!
+  phoneNumber: String
+  registrationNo: String
+
+  """Identifies the date and time when the object was last updated."""
+  updated_at: Date!
+
+  """Identifies the user id who updated."""
+  updated_by: String!
+}
+
+type Country {
+  """Identifies the date and time when the object was created."""
+  created_at: Date!
+
+  """Identifies the user id who created."""
+  created_by: String!
+  id: ID!
+  name: String!
+
+  """Identifies the date and time when the object was last updated."""
+  updated_at: Date!
+
+  """Identifies the user id who updated."""
+  updated_by: String!
 }
 
 """Date custom scalar type"""
@@ -31,92 +125,127 @@ input LoginInput {
 
 type Mutation {
   changePassword(data: ChangePasswordInput!): User!
-  createPost(data: CreatePostInput!): Post!
   login(data: LoginInput!): Auth!
   refreshToken(token: String!): Token!
   signup(data: SignupInput!): Auth!
   updateUser(data: UpdateUserInput!): User!
 }
 
-"""
-Possible directions in which to order a list of items when provided an `orderBy` argument.
-"""
-enum OrderDirection {
-  asc
-  desc
-}
-
-type PageInfo {
-  endCursor: String
-  hasNextPage: Boolean!
-  hasPreviousPage: Boolean!
-  startCursor: String
-}
-
 type Post {
-  author: User!
-  content: String!
+  Project: Project!
+  User: User!
 
   """Identifies the date and time when the object was created."""
-  createdAt: Date!
+  created_at: Date!
+
+  """Identifies the user id who created."""
+  created_by: String!
+  description: String
+  endDate: Date!
   id: ID!
-  published: Boolean!
-  title: String!
+  name: String!
+  postBaseCategory: PostBaseCategory
+  postCategory: PostCategory!
+  postViewType: PostViewType!
+  startDate: Date!
 
   """Identifies the date and time when the object was last updated."""
-  updatedAt: Date!
+  updated_at: Date!
+
+  """Identifies the user id who updated."""
+  updated_by: String!
 }
 
-type PostConnection {
-  edges: [PostEdge!]
-  pageInfo: PageInfo!
-  totalCount: Int!
+enum PostBaseCategory {
+  EVENT
+  LINKS
+  USEFUL_CONTACT_NO
 }
 
-type PostEdge {
-  cursor: String!
-  node: Post!
+type PostCategory {
+  """Identifies the date and time when the object was created."""
+  created_at: Date!
+
+  """Identifies the user id who created."""
+  created_by: String!
+  description: String
+  id: ID!
+  name: String!
+  post: Post!
+
+  """Identifies the date and time when the object was last updated."""
+  updated_at: Date!
+
+  """Identifies the user id who updated."""
+  updated_by: String!
 }
 
-input PostOrder {
-  direction: OrderDirection!
-  field: PostOrderField!
+enum PostViewType {
+  ALL
+  FOLLOWERS
+  INTERNAL
 }
 
-"""Properties by which post connections can be ordered."""
-enum PostOrderField {
-  content
-  createdAt
-  id
-  published
-  title
-  updatedAt
+type Project {
+  address: Address
+
+  """Identifies the date and time when the object was created."""
+  created_at: Date!
+
+  """Identifies the user id who created."""
+  created_by: String!
+  description: String
+  email: String!
+  id: ID!
+  name: String!
+  phoneNumber: String
+  registrationNo: String
+
+  """Identifies the date and time when the object was last updated."""
+  updated_at: Date!
+
+  """Identifies the user id who updated."""
+  updated_by: String!
 }
 
 type Query {
   hello(name: String!): String!
   helloWorld: String!
   me: User!
-  post(postId: String!): Post!
-  publishedPosts(after: String, before: String, first: Int, last: Int, orderBy: PostOrder, query: String, skip: Int): PostConnection!
-  userPosts(userId: String!): [Post!]!
 }
 
 """User role"""
 enum Role {
   ADMIN
+  SUPERADMIN
   USER
 }
 
 input SignupInput {
   email: String!
-  firstname: String
-  lastname: String
+  first_name: String!
+  last_name: String!
   password: String!
+  phone_number: String!
+  role: String!
 }
 
-type Subscription {
-  postCreated: Post!
+type State {
+  cities: [City!]!
+
+  """Identifies the date and time when the object was created."""
+  created_at: Date!
+
+  """Identifies the user id who created."""
+  created_by: String!
+  id: ID!
+  name: String!
+
+  """Identifies the date and time when the object was last updated."""
+  updated_at: Date!
+
+  """Identifies the user id who updated."""
+  updated_by: String!
 }
 
 type Token {
@@ -128,20 +257,57 @@ type Token {
 }
 
 input UpdateUserInput {
-  firstname: String
-  lastname: String
+  email: String!
+  first_name: String!
+  last_name: String!
+  phone_number: String!
 }
 
 type User {
+  address: Address!
+  adminProjects: [AdminProject!]!
+
   """Identifies the date and time when the object was created."""
-  createdAt: Date!
+  created_at: Date!
+
+  """Identifies the user id who created."""
+  created_by: String!
   email: String!
-  firstname: String
+  firstName: String
   id: ID!
-  lastname: String
+  lastName: String
+  loginAttempt: Int!
+  phoneNumber: String
   posts: [Post!]!
   role: Role!
+  status: UserStatus!
 
   """Identifies the date and time when the object was last updated."""
-  updatedAt: Date!
+  updated_at: Date!
+
+  """Identifies the user id who updated."""
+  updated_by: String!
+  userProjectFollowers: [UserProjectFollower!]!
+}
+
+type UserProjectFollower {
+  """Identifies the date and time when the object was created."""
+  created_at: Date!
+
+  """Identifies the user id who created."""
+  created_by: String!
+  id: ID!
+  project: Project!
+
+  """Identifies the date and time when the object was last updated."""
+  updated_at: Date!
+
+  """Identifies the user id who updated."""
+  updated_by: String!
+  user: User!
+}
+
+enum UserStatus {
+  ACTIVE
+  INACTIVE
 }

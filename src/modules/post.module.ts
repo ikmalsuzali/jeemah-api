@@ -1,4 +1,4 @@
-import { PostResolver } from './post.resolver';
+import { PostResolver } from './../resolvers/post/post.resolver';
 import { Module } from '@nestjs/common';
 
 @Module({

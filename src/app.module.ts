@@ -1,16 +1,17 @@
+import { CountryModule } from './country/country.module';
 import { GraphQLModule } from '@nestjs/graphql';
 import { Module } from '@nestjs/common';
-import { AppController } from './controllers/app.controller';
 import { AppService } from './services/app.service';
 import { AuthModule } from './resolvers/auth/auth.module';
 import { UserModule } from './resolvers/user/user.module';
-import { PostModule } from './resolvers/post/post.module';
+import { PostModule } from './modules/post.module';
 import { AppResolver } from './resolvers/app.resolver';
 import { DateScalar } from './common/scalars/date.scalar';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import config from './configs/config';
 import { GraphqlConfig } from './configs/config.interface';
 import { PrismaModule } from 'nestjs-prisma';
+import { CityModule } from './city/city.module';
 
 @Module({
   imports: [
@@ -39,8 +40,10 @@ import { PrismaModule } from 'nestjs-prisma';
     AuthModule,
     UserModule,
     PostModule,
+    CityModule,
+    CountryModule
   ],
-  controllers: [AppController],
-  providers: [AppService, AppResolver, DateScalar],
+  controllers: [],
+  providers: [AppService,  AppResolver, DateScalar],
 })
 export class AppModule {}

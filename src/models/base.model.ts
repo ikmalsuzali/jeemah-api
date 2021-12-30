@@ -1,4 +1,4 @@
-import { Field, ObjectType, ID } from '@nestjs/graphql';
+import { Field, ObjectType, ID, HideField } from '@nestjs/graphql';
 
 @ObjectType({ isAbstract: true })
 export abstract class BaseModel {
@@ -7,18 +7,19 @@ export abstract class BaseModel {
   @Field({
     description: 'Identifies the date and time when the object was created.',
   })
-  createdAt: Date;
+  created_at: Date;
   @Field({
     description:
       'Identifies the date and time when the object was last updated.',
   })
-  updatedAt: Date;
+  updated_at: Date;
   @Field({
     description: 'Identifies the user id who created.',
   })
-  createdBy: string;
+  created_by: string;
   @Field({
     description: 'Identifies the user id who updated.',
   })
-  updatedBy: string;
+
+  updated_by: string;
 }

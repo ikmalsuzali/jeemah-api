@@ -11,17 +11,19 @@ export enum Role {
   USER = 'USER',
 }
 
-export enum UserStatus {
-  ACTIVE = 'ACTIVE',
-  INACTIVE = 'INACTIVE',
-}
-
-
 registerEnumType(Role, {
   name: 'Role',
   description: 'User role',
 });
 
+export enum UserStatus {
+  ACTIVE = 'ACTIVE',
+  INACTIVE = 'INACTIVE',
+}
+
+registerEnumType(UserStatus, {
+  name: 'UserStatus',
+});
 @ObjectType()
 export class User extends BaseModel {
   email: string;

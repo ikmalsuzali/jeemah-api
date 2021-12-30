@@ -1,3 +1,4 @@
+import { Role } from './../../../models/user.model';
 import { IsEmail, IsNotEmpty, MinLength } from 'class-validator';
 import { InputType, Field } from '@nestjs/graphql';
 
@@ -12,9 +13,15 @@ export class SignupInput {
   @MinLength(8)
   password: string;
 
-  @Field({ nullable: true })
-  firstname?: string;
+  @Field()
+  first_name: string;
 
-  @Field({ nullable: true })
-  lastname?: string;
+  @Field()
+  last_name: string;
+
+  @Field()
+  phone_number: string;
+
+  @Field()
+  role: Role;
 }

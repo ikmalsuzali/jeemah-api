@@ -56,7 +56,7 @@ export class AuthService {
     const user = await this.prisma.user.findUnique({ where: { email } });
 
     if (!user) {
-      throw new NotFoundException(`No user found for email: ${email}`);
+      throw new BadRequestException('Invalid email and/or password');
     }
 
     const passwordValid = await this.passwordService.validatePassword(
@@ -65,7 +65,7 @@ export class AuthService {
     );
 
     if (!passwordValid) {
-      throw new BadRequestException('Invalid password');
+      throw new BadRequestException('Invalid email and/or password');
     }
 
     return this.generateTokens({
