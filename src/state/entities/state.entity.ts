@@ -1,6 +1,6 @@
-import { City } from './../city/entities/city.model';
+import { BaseModel } from 'src/models/base.model';
+import { City } from './../../city/entities/city.model';
 import { ObjectType } from '@nestjs/graphql';
-import { BaseModel } from './base.model';
 
 @ObjectType()
 export class State extends BaseModel {

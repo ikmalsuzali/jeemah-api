@@ -1,3 +1,4 @@
+import { FilterCountryDto } from './dto/filter-country.dto';
 import { PrismaService } from 'nestjs-prisma';
 import { Injectable } from '@nestjs/common';
 
@@ -6,15 +7,15 @@ export class CountryService {
   constructor(private prisma: PrismaService) {}
 
   async getAllCountries() {
-    return await this.prisma.country.findMany({
+    let query: any = {
       include: {
         states: {
           include: {
-            cities: true
-          }
-        }
+            cities: true,
+          },
+        },
       }
-    });
+    };
+    return await this.prisma.country.findMany(query);
   }
-
 }

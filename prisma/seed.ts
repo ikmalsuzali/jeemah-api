@@ -12,11 +12,11 @@ async function main() {
   await prisma.country.deleteMany();
   await prisma.city.deleteMany();
   await prisma.state.deleteMany();
+  await prisma.project.deleteMany();
 
   console.log('Seeding.......');
 
   const countryArray: string[] = ['Malaysia', 'Indonesia'];
-
   for (const country of countryArray) {
     await prisma.country.create({
       data: {
@@ -120,12 +120,80 @@ async function main() {
       },
     });
 
-    console.log(address);
   }
   } catch(error) {
     console.log(error)
   }
+
+  // country
+  for (let i = 0; i < 100; i++) {
+    const randomAddress =
+      await prisma.$queryRaw`SELECT * from nest_db."Address" ORDER BY RANDOM() LIMIT 1`;
+    const project = await prisma.project.create({
+      data: {
+        name: faker.company.companyName(),
+        registration_no: faker.finance.creditCardNumber(),
+        phone_number: faker.phone.phoneNumber(),
+        email: faker.internet.email(),
+        address: {
+          connect: {
+            id: randomAddress[0].id,
+          },
+        },
+      },
+    });
+
+    // console.log(project);
+  }
+
+
+  for (let i = 0; i < 100; i++) {
+
+    const users =
+        await prisma.$queryRaw`SELECT * from nest_db."User" WHERE role = 'USER' ORDER BY RANDOM() LIMIT 1`;
+
+    const admins =
+        await prisma.$queryRaw`SELECT * from nest_db."User" WHERE role = 'ADMIN' ORDER BY RANDOM() LIMIT 1`;
+
+    const projects =
+        await prisma.$queryRaw`SELECT * from nest_db."Project" ORDER BY RANDOM() LIMIT 1`;
+   
+    await prisma.userProjectFollower.create({
+      data: {
+        user: {
+          connect: {
+            id: users[0].id
+          }
+        },
+        project: {
+          connect: {
+            id: projects[0].id
+          }
+        }
+      }
+    })
+
+    await prisma.adminProject.create({
+      data: {
+        user: {
+          connect: {
+            id: admins[0].id,
+          },
+        },
+        project: {
+          connect: {
+            id: projects[0].id,
+          },
+        },
+      },
+    });
+    
+    
+  }
+
 }
+
+
 
 main()
   .catch((e) => console.error(e))
