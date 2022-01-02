@@ -13,6 +13,9 @@ import { GraphqlConfig } from './configs/config.interface';
 import { PrismaModule } from 'nestjs-prisma';
 import { CityModule } from './city/city.module';
 import { StateModule } from './state/state.module';
+import { CommpanyModule } from './commpany/commpany.module';
+import { CompanyModule } from './company/company.module';
+import { ProjectModule } from './project/project.module';
 
 @Module({
   imports: [
@@ -44,6 +47,9 @@ import { StateModule } from './state/state.module';
     CityModule,
     CountryModule,
     StateModule,
+    CommpanyModule,
+    CompanyModule,
+    ProjectModule,
   ],
   controllers: [],
   providers: [AppService,  AppResolver, DateScalar],

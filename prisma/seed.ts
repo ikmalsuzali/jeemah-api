@@ -104,7 +104,9 @@ async function main() {
 
   for (let i = 0; i < 100; i++) {
         const randomCity =
-      await prisma.$queryRaw`SELECT * from nest_db."City" ORDER BY RANDOM() LIMIT 1`;
+      await prisma.$queryRaw`SELECT * from "City" ORDER BY RANDOM() LIMIT 1`;
+
+
 
     const address = await prisma.address.create({
       data: {
@@ -128,7 +130,7 @@ async function main() {
   // country
   for (let i = 0; i < 100; i++) {
     const randomAddress =
-      await prisma.$queryRaw`SELECT * from nest_db."Address" ORDER BY RANDOM() LIMIT 1`;
+      await prisma.$queryRaw`SELECT * from "Address" ORDER BY RANDOM() LIMIT 1`;
     const project = await prisma.project.create({
       data: {
         name: faker.company.companyName(),
@@ -150,13 +152,13 @@ async function main() {
   for (let i = 0; i < 100; i++) {
 
     const users =
-        await prisma.$queryRaw`SELECT * from nest_db."User" WHERE role = 'USER' ORDER BY RANDOM() LIMIT 1`;
+        await prisma.$queryRaw`SELECT * from "User" WHERE role = 'USER' ORDER BY RANDOM() LIMIT 1`;
 
     const admins =
-        await prisma.$queryRaw`SELECT * from nest_db."User" WHERE role = 'ADMIN' ORDER BY RANDOM() LIMIT 1`;
+        await prisma.$queryRaw`SELECT * from "User" WHERE role = 'ADMIN' ORDER BY RANDOM() LIMIT 1`;
 
     const projects =
-        await prisma.$queryRaw`SELECT * from nest_db."Project" ORDER BY RANDOM() LIMIT 1`;
+        await prisma.$queryRaw`SELECT * from "Project" ORDER BY RANDOM() LIMIT 1`;
    
     await prisma.userProjectFollower.create({
       data: {
