@@ -1,4 +1,3 @@
-import { FilterCountryDto } from './dto/filter-country.dto';
 import { PrismaService } from 'nestjs-prisma';
 import { Injectable } from '@nestjs/common';
 

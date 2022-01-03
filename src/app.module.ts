@@ -16,6 +16,8 @@ import { StateModule } from './state/state.module';
 import { CommpanyModule } from './commpany/commpany.module';
 import { CompanyModule } from './company/company.module';
 import { ProjectModule } from './project/project.module';
+import { AddressModule } from './address/address.module';
+import { UserProjectFollowerModule } from './user-project-follower/user-project-follower.module';
 
 @Module({
   imports: [
@@ -50,6 +52,8 @@ import { ProjectModule } from './project/project.module';
     CommpanyModule,
     CompanyModule,
     ProjectModule,
+    AddressModule,
+    UserProjectFollowerModule,
   ],
   controllers: [],
   providers: [AppService,  AppResolver, DateScalar],
