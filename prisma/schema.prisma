@@ -4,7 +4,7 @@ datasource db {
 }
 
 generator client {
-  provider = "prisma-client-js"
+  provider        = "prisma-client-js"
   previewFeatures = ["fullTextSearch"]
   // previewFeatures = []
 }
@@ -14,15 +14,15 @@ generator dbml {
 }
 
 model Address {
-  id         String    @id @default(cuid())
+  id         String   @id @default(cuid())
   address    String
   postcode   String?
-  city_id    String   
-  city       City      @relation(fields: [city_id], references: [id])
+  city_id    String
+  city       City     @relation(fields: [city_id], references: [id])
   longitude  Float?
   latitude   Float?
-  created_at DateTime  @default(now())
-  updated_at DateTime  @updatedAt
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
   created_by String?
   updated_by String?
   User       User?
@@ -44,17 +44,17 @@ model AdminProject {
 }
 
 model City {
-  id         String   @id @default(cuid())
+  id         String    @id @default(cuid())
   name       String
   state_id   String?
   state      State?    @relation(fields: [state_id], references: [id])
   country_id String?
   country    Country?  @relation(fields: [country_id], references: [id])
-  created_at DateTime @default(now())
-  updated_at DateTime @updatedAt
+  created_at DateTime  @default(now())
+  updated_at DateTime  @updatedAt
   created_by String?
   updated_by String?
-  Address    Address?
+  addresses  Address[]
 }
 
 model Country {
@@ -91,54 +91,104 @@ model PostCategory {
   updated_at  DateTime @updatedAt
   created_by  String?
   updated_by  String?
-  Post        Post[]
+  posts       Post[]
 }
 
 model Post {
-  id               String       @id @default(cuid())
-  name             String
-  description      String?
-  post_base_category PostBaseCategory?
-  post_view_type   PostViewType @default(ALL)
-  post_category    PostCategory? @relation(fields: [post_category_id], references: [id])
-  post_category_id String
-  start_date       DateTime?
-  end_date         DateTime?
-  User             User?        @relation(fields: [user_id], references: [id])
-  user_id          String?
-  project          Project      @relation(fields: [project_id], references: [id])
-  project_id       String
-  created_at       DateTime     @default(now())
-  updated_at       DateTime     @updatedAt
-  created_by       String?
-  updated_by       String?
+  id                    String               @id @default(cuid())
+  name                  String
+  description           String?
+  post_base_category    PostBaseCategory?
+  post_view_type        PostViewType         @default(ALL)
+  post_category         PostCategory?        @relation(fields: [post_category_id], references: [id])
+  post_category_id      String
+  has_attendence        Boolean              @default(false)
+  start_date            DateTime?
+  end_date              DateTime?
+  User                  User?                @relation(fields: [user_id], references: [id])
+  user_id               String?
+  project               Project              @relation(fields: [project_id], references: [id])
+  project_id            String
+  created_at            DateTime             @default(now())
+  updated_at            DateTime             @updatedAt
+  created_by            String?
+  updated_by            String?
+  user_post_attendences UserPostAttendence[]
+  post_images           PostImage[]
+  post_attachments      PostAttachment[]
+}
+
+model PostImage {
+  id         String   @id @default(cuid())
+  post_id    String
+  post       Post     @relation(fields: [post_id], references: [id])
+  filename   String
+  url        String
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
+}
+
+model PostAttachment {
+  id       String @id @default(cuid())
+  post_id  String
+  post     Post   @relation(fields: [post_id], references: [id])
+  filename String
+  url      String
+}
+
+model UserPostAttendence {
+  id         String   @id @default(cuid())
+  user_id    String
+  user       User     @relation(fields: [user_id], references: [id])
+  post_id    String
+  post       Post     @relation(fields: [post_id], references: [id])
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
+  created_by String?
+  updated_by String?
 }
 
 model Project {
-  id                  String                @id @default(cuid())
-  name                String
-  registration_no     String?
-  phone_number        String?
-  email               String
-  description         String?
-  address_id          String?               @unique
-  address             Address?              @relation(fields: [address_id], references: [id])
-  created_at          DateTime              @default(now())
-  updated_at          DateTime              @updatedAt
-  created_by          String?
-  updated_by          String?
-  Post                Post[]
-  UserProjectFollower UserProjectFollower[]
-  AdminProjects       AdminProject[]
-
+  id                     String                 @id @default(cuid())
+  name                   String
+  registration_no        String?
+  phone_number           String?
+  email                  String
+  description            String?
+  address_id             String?                @unique
+  address                Address?               @relation(fields: [address_id], references: [id])
+  currency_id            String
+  currency               Currency               @relation(fields: [currency_id], references: [id])
+  created_at             DateTime               @default(now())
+  updated_at             DateTime               @updatedAt
+  created_by             String?
+  updated_by             String?
+  post                   Post[]
+  user_project_followers UserProjectFollower[]
+  admin_projects         AdminProject[]
+  project_images         ProjectImage[]
+  bookings               Booking[]
+  booked_rooms           BookedRoom[]
+  rooms                  Room[]
+  admin_project_position AdminProjectPosition[]
+  room_rate              RoomRate[]
 }
 
+model ProjectImage {
+  id         String   @id @default(cuid())
+  project_id String
+  project    Project  @relation(fields: [project_id], references: [id])
+  filename   String
+  url        String
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
+}
 
 model State {
   id         String   @id @default(cuid())
   name       String
   country_id String?
-  country    Country?  @relation(fields: [country_id], references: [id])
+  country    Country? @relation(fields: [country_id], references: [id])
   created_at DateTime @default(now())
   updated_at DateTime @updatedAt
   created_by String?
@@ -160,23 +210,24 @@ model UserProjectFollower {
 }
 
 model User {
-  id            String                @id @default(cuid())
-  email         String                @unique
-  password      String
-  first_name    String?
-  last_name     String?
-  phone_number  String
-  status        UserStatus?           @default(ACTIVE)
-  address_id    String?               @unique
-  address       Address?              @relation(fields: [address_id], references: [id])
-  role          Role
-  created_at    DateTime              @default(now())
-  updated_at    DateTime              @updatedAt
-  created_by    String?
-  updated_by    String?
-  posts         Post[]
-  user_projects  UserProjectFollower[]
-  admin_projects AdminProject[]
+  id                    String                @id @default(cuid())
+  email                 String                @unique
+  password              String
+  first_name            String?
+  last_name             String?
+  phone_number          String
+  status                UserStatus?           @default(ACTIVE)
+  address_id            String?               @unique
+  address               Address?              @relation(fields: [address_id], references: [id])
+  role                  Role
+  created_at            DateTime              @default(now())
+  updated_at            DateTime              @updatedAt
+  created_by            String?
+  updated_by            String?
+  posts                 Post[]
+  user_projects         UserProjectFollower[]
+  admin_projects        AdminProject[]
+  user_post_attendences UserPostAttendence[]
 }
 
 model UserInvite {
@@ -186,6 +237,112 @@ model UserInvite {
   updated_at DateTime @updatedAt
   created_by String?
   updated_by String?
+}
+
+model Booking {
+  id                    String              @id @default(cuid())
+  name                  String
+  reference_no          String?
+  description           String?
+  cancelled_description String?
+  start_datetime        DateTime
+  end_datetime          DateTime
+  discount              Int                 @default(0)
+  booking_status        BookingStatus       @default(OPEN)
+  info_color            String?
+  project_id            String
+  project               Project             @relation(fields: [project_id], references: [id])
+  created_at            DateTime            @default(now())
+  updated_at            DateTime            @updatedAt
+  created_by            String?
+  updated_by            String?
+  booking_images        BookingImage[]
+  booking_attachments   BookingAttachment[]
+
+}
+
+model BookingImage {
+  id         String   @id @default(cuid())
+  booking_id String
+  booking    Booking  @relation(fields: [booking_id], references: [id])
+  filename   String
+  url        String
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
+}
+
+model BookedRoom {
+  id         String   @id @default(cuid())
+  project_id String
+  project    Project  @relation(fields: [project_id], references: [id])
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
+  created_by String?
+  updated_by String?
+
+}
+
+model Room {
+  id              String    @id @default(cuid())
+  name            String
+  description     String?
+  minute_duration Int       @default(30)
+  room_rate       RoomRate?
+  project_id      String
+  project         Project   @relation(fields: [project_id], references: [id])
+  created_at      DateTime  @default(now())
+  updated_at      DateTime  @updatedAt
+  created_by      String?
+  updated_by      String?
+}
+
+model AdminProjectPosition {
+  id         String   @id @default(cuid())
+  order      Int
+  name       String
+  user_id    String?
+  project_id String
+  project    Project  @relation(fields: [project_id], references: [id])
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
+  created_by String?
+  updated_by String?
+
+}
+
+model RoomRate {
+  id             String       @id @default(cuid())
+  room_id        String
+  room           Room         @relation(fields: [room_id], references: [id])
+  room_rate_type RoomRateType
+  project_id     String
+  project        Project      @relation(fields: [project_id], references: [id])
+  created_at     DateTime     @default(now())
+  updated_at     DateTime     @updatedAt
+  created_by     String?
+  updated_by     String?
+}
+
+model Currency {
+  id         String   @id @default(cuid())
+  code       String
+  symbol     String
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
+  created_by String?
+  updated_by String?
+
+  Project Project[]
+}
+
+model BookingAttachment {
+  id         String   @id @default(cuid())
+  booking_id String
+  booking    Booking  @relation(fields: [booking_id], references: [id])
+  filename   String
+  url        String
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
 }
 
 enum Role {
@@ -209,4 +366,22 @@ enum PostViewType {
   FOLLOWERS
   INTERNAL
   ALL
+}
+
+enum BookingStatus {
+  OPEN
+  BOOKED
+  CANCELLED
+}
+
+enum RoomRateType {
+  DAILY_PER_USER
+  ONE_OFF_PER_USER
+  ONE_OFF_PER_ROOM
+}
+
+enum RoomType {
+  PUBLIC
+  PRIVATE
+  INTERNAL
 }
