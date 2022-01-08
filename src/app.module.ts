@@ -19,6 +19,7 @@ import { ProjectModule } from './project/project.module';
 import { AddressModule } from './address/address.module';
 import { UserProjectFollowerModule } from './user-project-follower/user-project-follower.module';
 import { PostCategoryModule } from './post-category/post-category.module';
+import { AdminProjectModule } from './admin-project/admin-project.module';
 
 @Module({
   imports: [
@@ -56,6 +57,7 @@ import { PostCategoryModule } from './post-category/post-category.module';
     AddressModule,
     UserProjectFollowerModule,
     PostCategoryModule,
+    AdminProjectModule,
   ],
   controllers: [],
   providers: [AppService,  AppResolver, DateScalar],
