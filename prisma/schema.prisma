@@ -149,29 +149,42 @@ model UserPostAttendence {
 }
 
 model Project {
-  id                     String                 @id @default(cuid())
-  name                   String
-  registration_no        String?
-  phone_number           String?
-  email                  String
-  description            String?
-  address_id             String?                @unique
-  address                Address?               @relation(fields: [address_id], references: [id])
-  currency_id            String
-  currency               Currency               @relation(fields: [currency_id], references: [id])
-  created_at             DateTime               @default(now())
-  updated_at             DateTime               @updatedAt
-  created_by             String?
-  updated_by             String?
-  post                   Post[]
-  user_project_followers UserProjectFollower[]
-  admin_projects         AdminProject[]
-  project_images         ProjectImage[]
-  bookings               Booking[]
-  booked_rooms           BookedRoom[]
-  rooms                  Room[]
-  admin_project_position AdminProjectPosition[]
-  room_rate              RoomRate[]
+  id                        String                   @id @default(cuid())
+  name                      String
+  registration_no           String?
+  phone_number              String?
+  email                     String
+  description               String?
+  address_id                String?                  @unique
+  address                   Address?                 @relation(fields: [address_id], references: [id])
+  currency_id               String
+  financial_detail_id       String?
+  financial_detail          ProjectFinancialDetails? @relation(fields: [financial_detail_id], references: [id])
+  currency                  Currency                 @relation(fields: [currency_id], references: [id])
+  created_at                DateTime                 @default(now())
+  updated_at                DateTime                 @updatedAt
+  created_by                String?
+  updated_by                String?
+  post                      Post[]
+  user_project_followers    UserProjectFollower[]
+  admin_projects            AdminProject[]
+  project_images            ProjectImage[]
+  bookings                  Booking[]
+  booked_rooms              BookedRoom[]
+  rooms                     Room[]
+  admin_project_position    OrganizationChartAdmin[]
+  room_rate                 RoomRate[]
+}
+
+model ProjectFinancialDetails {
+  id           String    @id @default(cuid())
+  bank_account String?
+  ipay88_code  String?
+  created_at   DateTime  @default(now())
+  updated_at   DateTime  @updatedAt
+  created_by   String?
+  updated_by   String?
+  project      Project?
 }
 
 model ProjectImage {
@@ -228,6 +241,7 @@ model User {
   user_projects         UserProjectFollower[]
   admin_projects        AdminProject[]
   user_post_attendences UserPostAttendence[]
+  organization_chart_admins OrganizationChartAdmin[]
 }
 
 model UserInvite {
@@ -296,11 +310,12 @@ model Room {
   updated_by      String?
 }
 
-model AdminProjectPosition {
+model OrganizationChartAdmin {
   id         String   @id @default(cuid())
   order      Int
   name       String
   user_id    String?
+  user User? @relation(fields: [user_id], references: [id])
   project_id String
   project    Project  @relation(fields: [project_id], references: [id])
   created_at DateTime @default(now())

@@ -26,7 +26,7 @@ export class ProjectService {
     });
   }
 
-  // USE CASE: AS AN 
+  // USE CASE: AS AN
   async findAll(search?: string, city_id?: string) {
     return await this.prisma.project.findMany({
       where: {
@@ -50,6 +50,8 @@ export class ProjectService {
     });
   }
 
+  // USE CASE: As an admin, I can update my mosque details
+  // USE CASE: As an admin, I can add the address and exact location of the mosque
   async update(id: string, updateProjectDto: UpdateProjectDto) {
     const project: any = this.findOne(id);
     const address = await this.addressService.update(
@@ -72,6 +74,7 @@ export class ProjectService {
     });
   }
 
+  // USE CASE: As an super-admin, I can delete the mosque
   async remove(id: string) {
     const project: any = this.findOne(id);
     await this.prisma.address.delete({

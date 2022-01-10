@@ -20,6 +20,7 @@ import { AddressModule } from './address/address.module';
 import { UserProjectFollowerModule } from './user-project-follower/user-project-follower.module';
 import { PostCategoryModule } from './post-category/post-category.module';
 import { AdminProjectModule } from './admin-project/admin-project.module';
+import { OrganizationChartAdminModule } from './organization-chart-admin/organization-chart-admin.module';
 
 @Module({
   imports: [
@@ -58,6 +59,7 @@ import { AdminProjectModule } from './admin-project/admin-project.module';
     UserProjectFollowerModule,
     PostCategoryModule,
     AdminProjectModule,
+    OrganizationChartAdminModule,
   ],
   controllers: [],
   providers: [AppService,  AppResolver, DateScalar],

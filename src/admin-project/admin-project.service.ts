@@ -15,7 +15,8 @@ export class AdminProjectService {
     });
   }
 
-  async update(id: number, updateAdminProjectDto: UpdateAdminProjectDto) {
+  // USE CASE: As an admin, I can add other admins to the mosque
+  async update(updateAdminProjectDto: UpdateAdminProjectDto) {
     const { user_id, project_ids } = updateAdminProjectDto;
     if (!project_ids.length) return;
     let adminProjects = [];
@@ -27,7 +28,7 @@ export class AdminProjectService {
       });
     });
 
-    await this.remove(updateAdminProjectDto.user_id, []);
+    await this.remove(user_id, []);
 
     return await this.prisma.adminProject.createMany({
       data: adminProjects,
