@@ -1,5 +1,5 @@
 import { ViewType } from '@prisma/client';
-import { PostBaseCategory } from './../../models/post.model';
+import { PostBaseCategory } from '../../../models/post.model';
 export class GetPostDto {
     project_id: string
     post_base_category: PostBaseCategory

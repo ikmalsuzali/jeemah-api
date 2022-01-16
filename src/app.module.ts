@@ -1,4 +1,4 @@
-import { CountryModule } from './country/country.module';
+import { CountryModule } from './modules/country/country.module';
 import { GraphQLModule } from '@nestjs/graphql';
 import { Module } from '@nestjs/common';
 import { AppService } from './services/app.service';
@@ -10,24 +10,23 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
 import config from './configs/config';
 import { GraphqlConfig } from './configs/config.interface';
 import { PrismaModule } from 'nestjs-prisma';
-import { CityModule } from './city/city.module';
-import { StateModule } from './state/state.module';
-import { CompanyModule } from './company/company.module';
-import { ProjectModule } from './project/project.module';
-import { AddressModule } from './address/address.module';
-import { UserProjectFollowerModule } from './user-project-follower/user-project-follower.module';
-import { PostCategoryModule } from './post-category/post-category.module';
-import { AdminProjectModule } from './admin-project/admin-project.module';
-import { OrganizationChartAdminModule } from './organization-chart-admin/organization-chart-admin.module';
-import { PostModule } from './post/post.module';
-import { ImageModule } from './image/image.module';
-import { BookingModule } from './booking/booking.module';
-import { EventModule } from './event/event.module';
-import { EventRateModule } from './event-rate/event-rate.module';
-import { EmailModule } from './email/email.module';
-import { CurrencyModule } from './currency/currency.module';
-import { PaymentModule } from './payment/payment.module';
-import { Ipay88Service } from './ipay88/ipay88.service';
+import { CityModule } from './modules/city/city.module';
+import { StateModule } from './modules/state/state.module';
+import { CompanyModule } from './modules/company/company.module';
+import { ProjectModule } from './modules/project/project.module';
+import { AddressModule } from './modules/address/address.module';
+import { UserProjectFollowerModule } from './modules/user-project-follower/user-project-follower.module';
+import { PostCategoryModule } from './modules/post-category/post-category.module';
+import { AdminProjectModule } from './modules/admin-project/admin-project.module';
+import { OrganizationChartAdminModule } from './modules/organization-chart-admin/organization-chart-admin.module';
+import { PostModule } from './modules/post/post.module';
+import { ImageModule } from './modules/image/image.module';
+import { BookingModule } from './modules/booking/booking.module';
+import { EventModule } from './modules/event/event.module';
+import { EventRateModule } from './modules/event-rate/event-rate.module';
+import { CurrencyModule } from './modules/currency/currency.module';
+import { PaymentModule } from './modules/payment/payment.module';
+import { Ipay88Service } from './modules/ipay88/ipay88.service';
 
 @Module({
   imports: [
@@ -70,7 +69,6 @@ import { Ipay88Service } from './ipay88/ipay88.service';
     BookingModule,
     EventModule,
     EventRateModule,
-    EmailModule,
     CurrencyModule,
     PaymentModule,
   ],

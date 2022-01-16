@@ -59,7 +59,6 @@ input ChangePasswordInput {
 
 type City {
   addresses: [Address!]!
-  country: Country!
 
   """Identifies the date and time when the object was created."""
   created_at: Date!
@@ -91,22 +90,6 @@ type Company {
   name: String!
   phoneNumber: String
   registrationNo: String
-
-  """Identifies the date and time when the object was last updated."""
-  updated_at: Date!
-
-  """Identifies the user id who updated."""
-  updated_by: String!
-}
-
-type Country {
-  """Identifies the date and time when the object was created."""
-  created_at: Date!
-
-  """Identifies the user id who created."""
-  created_by: String!
-  id: ID!
-  name: String!
 
   """Identifies the date and time when the object was last updated."""
   updated_at: Date!

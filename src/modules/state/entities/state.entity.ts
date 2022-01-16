@@ -1,5 +1,5 @@
 import { BaseModel } from 'src/models/base.model';
-import { City } from './../../city/entities/city.model';
+import { City } from '../../city/entities/city.model';
 import { ObjectType } from '@nestjs/graphql';
 
 @ObjectType()

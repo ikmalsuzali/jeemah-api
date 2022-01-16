@@ -1,4 +1,4 @@
-import { City } from './../city/entities/city.model';
+import { City } from '../modules/city/entities/city.model';
 import { Project } from './project.model';
 import { Company } from './company.model';
 import { ObjectType } from '@nestjs/graphql';

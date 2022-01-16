@@ -46,8 +46,4 @@ export class UserService {
     });
   }
 
-  async updateProjectFollowers(){}
-
-  async getProjectsFollowing(){}
-
 }

@@ -1,4 +1,4 @@
-import { AddressService } from './../address/address.service';
+import { AddressService } from '../address/address.service';
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from 'nestjs-prisma';
 import { CreateProjectDto } from './dto/create-project.dto';
