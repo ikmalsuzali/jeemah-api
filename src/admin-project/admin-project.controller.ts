@@ -3,32 +3,28 @@ import { AdminProjectService } from './admin-project.service';
 import { CreateAdminProjectDto } from './dto/create-admin-project.dto';
 import { UpdateAdminProjectDto } from './dto/update-admin-project.dto';
 
-@Controller('admin-project')
+@Controller('admin-projects')
 export class AdminProjectController {
   constructor(private readonly adminProjectService: AdminProjectService) {}
 
-  @Post()
-  create(@Body() createAdminProjectDto: CreateAdminProjectDto) {
-    return this.adminProjectService.create(createAdminProjectDto);
-  }
+  // @Post()
+  // create(@Body() createAdminProjectDto: CreateAdminProjectDto) {
+  //   return this.adminProjectService.create(createAdminProjectDto);
+  // }
 
   @Get()
-  findAll() {
-    return this.adminProjectService.findAll();
+  findAll(@Body() project_id: string) {
+    return this.adminProjectService.findAll(project_id);
   }
 
-  @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.adminProjectService.findOne(+id);
+  @Patch()
+  update(
+    @Body() updateAdminProjectDto: UpdateAdminProjectDto
+  ) {
+    return this.adminProjectService.update(updateAdminProjectDto);
   }
 
-  @Patch(':id')
-  update(@Param('id') id: string, @Body() updateAdminProjectDto: UpdateAdminProjectDto) {
-    return this.adminProjectService.update(+id, updateAdminProjectDto);
-  }
-
-  @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.adminProjectService.remove(+id);
+  remove(@Body() user_id: string, project_ids: string[]) {
+    return this.adminProjectService.remove(user_id, project_ids);
   }
 }

@@ -7,12 +7,16 @@ const prisma = new PrismaClient();
 async function main() {
   try {
   await prisma.address.deleteMany();
-  await prisma.user.deleteMany();
   await prisma.post.deleteMany();
   await prisma.country.deleteMany();
   await prisma.city.deleteMany();
   await prisma.state.deleteMany();
+  await prisma.adminProject.deleteMany();
+  await prisma.userProjectFollower.deleteMany()
+  await prisma.user.deleteMany();
   await prisma.project.deleteMany();
+
+
 
   console.log('Seeding.......');
 
@@ -145,7 +149,7 @@ async function main() {
       },
     });
 
-    // console.log(project);
+    console.log(project);
   }
 
 

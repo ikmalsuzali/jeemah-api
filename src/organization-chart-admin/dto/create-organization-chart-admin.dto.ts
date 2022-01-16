@@ -1,10 +1,9 @@
 class UserDto {
-    name: String
-    id?: String
+    name: string
+    id?: string
     order?: Number
 }
 
 export class CreateOrganizationChartAdminDto {
     users: UserDto[]
-    project_id: String
 }

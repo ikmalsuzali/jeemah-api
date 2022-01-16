@@ -10,13 +10,14 @@ Table Address {
   city City [not null]
   longitude Float
   latitude Float
+  project_id String
+  project Project
   created_at DateTime [default: `now()`, not null]
   updated_at DateTime [not null]
   created_by String
   updated_by String
-  User User
-  Company Company
-  Project Project
+  user User
+  company Company
 }
 
 Table AdminProject {
@@ -45,7 +46,7 @@ Table City {
   updated_at DateTime [not null]
   created_by String
   updated_by String
-  Address Address
+  addresses Address [not null]
 }
 
 Table Country {
@@ -78,11 +79,14 @@ Table PostCategory {
   id String [pk]
   name String [not null]
   description String
+  fallback_image String
+  project_id String
+  project Project
   created_at DateTime [default: `now()`, not null]
   updated_at DateTime [not null]
   created_by String
   updated_by String
-  Post Post [not null]
+  posts Post [not null]
 }
 
 Table Post {
@@ -90,15 +94,46 @@ Table Post {
   name String [not null]
   description String
   post_base_category PostBaseCategory
-  post_view_type PostViewType [not null, default: 'ALL']
-  post_category PostCategory
+  post_view_type ViewType [not null, default: 'PUBLIC']
   post_category_id String [not null]
+  post_category PostCategory
   start_date DateTime
   end_date DateTime
-  User User
-  user_id String
   project Project [not null]
   project_id String [not null]
+  created_at DateTime [default: `now()`, not null]
+  updated_at DateTime [not null]
+  created_by String
+  created_by_user User
+  updated_by String
+  post_images PostImage [not null]
+  post_attachments PostAttachment [not null]
+}
+
+Table PostImage {
+  id String [pk]
+  post_id String [not null]
+  post Post [not null]
+  filename String [not null]
+  url String [not null]
+  created_at DateTime [default: `now()`, not null]
+  updated_at DateTime [not null]
+}
+
+Table PostAttachment {
+  id String [pk]
+  post_id String [not null]
+  post Post [not null]
+  filename String [not null]
+  url String [not null]
+}
+
+Table UserBookingAttendence {
+  id String [pk]
+  user_id String [not null]
+  user User [not null]
+  booking_id String [not null]
+  booking Booking [not null]
   created_at DateTime [default: `now()`, not null]
   updated_at DateTime [not null]
   created_by String
@@ -112,15 +147,72 @@ Table Project {
   phone_number String
   email String [not null]
   description String
-  address_id String [unique]
-  address Address
+  currency_id String
+  currency Currency
+  financial_detail_id String
+  financial_detail ProjectFinancialDetail
   created_at DateTime [default: `now()`, not null]
   updated_at DateTime [not null]
   created_by String
   updated_by String
-  Post Post [not null]
-  UserProjectFollower UserProjectFollower [not null]
-  AdminProjects AdminProject [not null]
+  post Post [not null]
+  user_project_followers UserProjectFollower [not null]
+  admin_projects AdminProject [not null]
+  project_images ProjectImage [not null]
+  bookings Booking [not null]
+  events Event [not null]
+  admin_project_position OrganizationChartAdmin [not null]
+  event_rate EventRate [not null]
+  address Address
+  post_categories PostCategory [not null]
+}
+
+Table Payment {
+  id String [pk]
+  reference_no String [not null]
+  user_id String
+  user User
+  response_status Int
+  payment_method PaymentMethod
+  payment_status PaymentStatus [not null, default: 'PENDING']
+  project_id String [not null]
+  created_at DateTime [default: `now()`, not null]
+  updated_at DateTime [not null]
+  created_by String
+  updated_by String
+  receipt Receipt
+  payment_items PaymentItem [not null]
+}
+
+Table PaymentItem {
+  id String [pk]
+  payment_id String [not null]
+  payment Payment [not null]
+  created_at DateTime [default: `now()`, not null]
+  updated_at DateTime [not null]
+  created_by String
+  updated_by String
+}
+
+Table ProjectFinancialDetail {
+  id String [pk]
+  bank_account String
+  ipay88_code String
+  created_at DateTime [default: `now()`, not null]
+  updated_at DateTime [not null]
+  created_by String
+  updated_by String
+  project Project
+}
+
+Table ProjectImage {
+  id String [pk]
+  project_id String [not null]
+  project Project [not null]
+  filename String [not null]
+  url String [not null]
+  created_at DateTime [default: `now()`, not null]
+  updated_at DateTime [not null]
 }
 
 Table State {
@@ -168,6 +260,9 @@ Table User {
   posts Post [not null]
   user_projects UserProjectFollower [not null]
   admin_projects AdminProject [not null]
+  user_booking_attendences UserBookingAttendence [not null]
+  organization_chart_admins OrganizationChartAdmin [not null]
+  payments Payment [not null]
 }
 
 Table UserInvite {
@@ -177,6 +272,148 @@ Table UserInvite {
   updated_at DateTime [not null]
   created_by String
   updated_by String
+}
+
+Table Booking {
+  id String [pk]
+  name String [not null]
+  reference_no String [unique]
+  description String
+  cancelled_description String
+  start_datetime DateTime [not null]
+  duration_minute Int [not null]
+  discount Int [not null, default: 0]
+  booking_status BookingStatus [not null, default: 'OPEN']
+  event_id String
+  event Event
+  booking_view_type ViewType [not null, default: 'PUBLIC']
+  payment_type PaymentType [not null, default: 'NONE']
+  info_color String
+  max_attendees Int
+  project_id String [not null]
+  project Project [not null]
+  created_at DateTime [default: `now()`, not null]
+  updated_at DateTime [not null]
+  created_by String
+  updated_by String
+  booking_images BookingImage [not null]
+  booking_attachments BookingAttachment [not null]
+  user_booking_attendences UserBookingAttendence [not null]
+}
+
+Table BookingImage {
+  id String [pk]
+  booking_id String [not null]
+  booking Booking [not null]
+  filename String [not null]
+  url String [not null]
+  created_at DateTime [default: `now()`, not null]
+  updated_at DateTime [not null]
+}
+
+Table Event {
+  id String [pk]
+  name String [not null]
+  description String
+  minute_duration Int [not null, default: 30]
+  event_rate EventRate
+  project_id String [not null]
+  project Project [not null]
+  created_at DateTime [default: `now()`, not null]
+  updated_at DateTime [not null]
+  created_by String
+  updated_by String
+  bookings Booking [not null]
+}
+
+Table OrganizationChartAdmin {
+  id String [pk]
+  order Int [not null]
+  name String [not null]
+  user_id String
+  user User
+  project_id String [not null]
+  project Project [not null]
+  created_at DateTime [default: `now()`, not null]
+  updated_at DateTime [not null]
+  created_by String
+  updated_by String
+}
+
+Table EventRate {
+  id String [pk]
+  name String [not null]
+  description String
+  rate_amount Int [not null]
+  event_id String
+  event Event
+  event_rate_type EventRateType [not null]
+  project_id String [not null]
+  project Project [not null]
+  created_at DateTime [default: `now()`, not null]
+  updated_at DateTime [not null]
+  created_by String
+  updated_by String
+}
+
+Table Currency {
+  id String [pk]
+  code String [not null]
+  symbol String [not null]
+  created_at DateTime [default: `now()`, not null]
+  updated_at DateTime [not null]
+  created_by String
+  updated_by String
+  project Project [not null]
+}
+
+Table BookingAttachment {
+  id String [pk]
+  booking_id String [not null]
+  booking Booking [not null]
+  filename String [not null]
+  url String [not null]
+  created_at DateTime [default: `now()`, not null]
+  updated_at DateTime [not null]
+}
+
+Table Receipt {
+  id String [pk]
+  reference_no String
+  user_id String [not null]
+  payment_id String
+  payment Payment
+  project_id String [not null]
+  created_at DateTime [default: `now()`, not null]
+  updated_at DateTime [not null]
+  created_by String
+  updated_by String
+}
+
+Table Invoice {
+  id String [pk]
+  created_at DateTime [default: `now()`, not null]
+  updated_at DateTime [not null]
+  created_by String
+  updated_by String
+}
+
+Enum PaymentType {
+  NONE
+  DONATION
+  SERVICE
+}
+
+Enum PaymentStatus {
+  CANCELLED
+  PENDING
+  SUCCESS
+  FAILED
+}
+
+Enum PaymentMethod {
+  CASH
+  IPAY88
 }
 
 Enum Role {
@@ -196,13 +433,35 @@ Enum PostBaseCategory {
   LINKS
 }
 
-Enum PostViewType {
-  FOLLOWERS
-  INTERNAL
-  ALL
+Enum ViewType {
+  FOLLOWERS_PUBLIC
+  FOLLOWERS_PRIVATE
+  INTERNAL_PUBLIC
+  INTERNAL_PRIVATE
+  PUBLIC
 }
 
-Ref: Address.city_id - City.id
+Enum BookingStatus {
+  OPEN
+  BOOKED
+  CANCELLED
+}
+
+Enum EventRateType {
+  DAILY_PER_USER
+  ONE_OFF_PER_USER
+  ONE_OFF_PER_EVENT
+}
+
+Enum EventType {
+  PUBLIC
+  PRIVATE
+  INTERNAL
+}
+
+Ref: Address.city_id > City.id
+
+Ref: Address.project_id - Project.id
 
 Ref: AdminProject.user_id > User.id
 
@@ -214,13 +473,31 @@ Ref: City.country_id > Country.id
 
 Ref: Company.address_id - Address.id
 
-Ref: Post.post_category_id > PostCategory.id
+Ref: PostCategory.project_id > Project.id
 
-Ref: Post.user_id > User.id
+Ref: Post.post_category_id > PostCategory.id
 
 Ref: Post.project_id > Project.id
 
-Ref: Project.address_id - Address.id
+Ref: Post.created_by > User.id
+
+Ref: PostImage.post_id > Post.id
+
+Ref: PostAttachment.post_id > Post.id
+
+Ref: UserBookingAttendence.user_id > User.id
+
+Ref: UserBookingAttendence.booking_id > Booking.id
+
+Ref: Project.currency_id > Currency.id
+
+Ref: Project.financial_detail_id - ProjectFinancialDetail.id
+
+Ref: Payment.user_id > User.id
+
+Ref: PaymentItem.payment_id > Payment.id
+
+Ref: ProjectImage.project_id > Project.id
 
 Ref: State.country_id > Country.id
 
@@ -229,3 +506,23 @@ Ref: UserProjectFollower.user_id > User.id
 Ref: UserProjectFollower.project_id > Project.id
 
 Ref: User.address_id - Address.id
+
+Ref: Booking.event_id > Event.id
+
+Ref: Booking.project_id > Project.id
+
+Ref: BookingImage.booking_id > Booking.id
+
+Ref: Event.project_id > Project.id
+
+Ref: OrganizationChartAdmin.user_id > User.id
+
+Ref: OrganizationChartAdmin.project_id > Project.id
+
+Ref: EventRate.event_id - Event.id
+
+Ref: EventRate.project_id > Project.id
+
+Ref: BookingAttachment.booking_id > Booking.id
+
+Ref: Receipt.payment_id - Payment.id

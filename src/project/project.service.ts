@@ -3,6 +3,8 @@ import { Injectable } from '@nestjs/common';
 import { PrismaService } from 'nestjs-prisma';
 import { CreateProjectDto } from './dto/create-project.dto';
 import { UpdateProjectDto } from './dto/update-project.dto';
+import { Prisma } from '@prisma/client'
+
 
 @Injectable()
 export class ProjectService {
@@ -26,12 +28,11 @@ export class ProjectService {
     });
   }
 
-  // USE CASE: AS AN
   async findAll(search?: string, city_id?: string) {
     return await this.prisma.project.findMany({
       where: {
         name: {
-          search: search,
+          search: search || undefined,
         },
         address: {
           city_id: city_id || undefined,
@@ -41,6 +42,16 @@ export class ProjectService {
         address: true,
       },
     });
+  }
+
+  async findAllByRadius(longitude: number, latitude: number, radius: number, is_metric: boolean){
+    return await this.prisma.$queryRaw(
+      Prisma.sql`SELECT *,(point(longitude, latitude) <@> point(${longitude}, ${latitude}))  * 1000 AS distance
+        FROM Projects
+        WHERE (point(longitude, latitude) <@> point(${longitude}, ${latitude})) <= ${radius} * ${
+        is_metric ? 1000 : 1609.34
+      }`
+    );
   }
 
   async findOne(id: string) {
@@ -93,7 +104,6 @@ export class ProjectService {
     return await this.prisma.userProjectFollower.count({
       where: {
         project_id: project_id,
-
         created_at: {
           gte: start_date || undefined,
           lte: end_date || undefined,

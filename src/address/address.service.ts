@@ -8,30 +8,44 @@ export class AddressService {
   constructor(private prisma: PrismaService){}
 
   create(createAddressDto: CreateAddressDto) {
+    const { address, postcode, city_id, longitude, latitude, project_id} = createAddressDto
     return this.prisma.address.create({
-      data: createAddressDto
-    })
-  }
-
-  findAll() {
-    return `This action returns all address`;
-  }
-
-  findOne(id: number) {
-    return `This action returns a #${id} address`;
-  }
-
-  update(id: string, updateAddressDto: UpdateAddressDto) {
-    return this.prisma.address.update({
-      where: {id},
       data: {
-        ...updateAddressDto,
+        address,
+        postcode,
+        longitude,
+        latitude,
         city: {
-          
-        }
+          connect: {id: city_id}
+        },
+        project: {
+          connect: { id: project_id },
+        },
       }
     });
   }
+
+  update(id: string, updateAddressDto: UpdateAddressDto) {
+    const { address, postcode, city_id, longitude, latitude, project_id} = updateAddressDto
+    return this.prisma.address.update({
+      where: {
+        id
+      },
+      data: {
+        address,
+        postcode,
+        longitude,
+        latitude,
+        city: {
+          connect: {id: city_id}
+        },
+        project: {
+          connect: { id: project_id },
+        },
+      }
+    });
+  }
+
 
   remove(id: string) {
     return this.prisma.address.delete({

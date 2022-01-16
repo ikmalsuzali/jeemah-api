@@ -1,27 +1,24 @@
-import { PrismaClient } from '@prisma/client';
+import { PrismaService } from 'nestjs-prisma';
 import { Injectable } from '@nestjs/common';
 import { UpdateOrganizationChartAdminDto } from './dto/update-organization-chart-admin.dto';
 
 @Injectable()
 export class OrganizationChartAdminService {
-  constructor(private readonly prisma: PrismaClient) {}
+  constructor(private readonly prisma: PrismaService) {}
 
-  // create(createOrganizationChartAdminDto: CreateOrganizationChartAdminDto) {
-  //   return 'This action adds a new organizationChartAdmin';
-  // }
-
-  // findOne(id: number) {
-  //   return `This action returns a #${id} organizationChartAdmin`;
-  // }
-
-  findAll() {
-    return `This action returns all organizationChartAdmin`;
+  findAll(project_id: string) {
+    return this.prisma.organizationChartAdmin.findMany({
+      where: {
+        project_id: project_id,
+      },
+    });
   }
 
   async update(
+    project_id: string,
     updateOrganizationChartAdminDto: UpdateOrganizationChartAdminDto
   ) {
-    const { users, project_id } = updateOrganizationChartAdminDto;
+    const { users } = updateOrganizationChartAdminDto;
     if (!users.length) return;
     let organizationUsers = [];
 
@@ -34,20 +31,23 @@ export class OrganizationChartAdminService {
       });
     });
 
-    await this.remove(updateOrganizationChartAdminDto);
+    await this.remove(project_id, updateOrganizationChartAdminDto);
 
     return await this.prisma.organizationChartAdmin.createMany({
       data: organizationUsers,
     });
   }
 
-  remove(updateOrganizationChartAdminDto: UpdateOrganizationChartAdminDto) {
-    const { users, project_id } = updateOrganizationChartAdminDto;
+  remove(
+    project_id: string,
+    updateOrganizationChartAdminDto: UpdateOrganizationChartAdminDto
+  ) {
+    const { users } = updateOrganizationChartAdminDto;
     const user_ids = users.map((user) => user.id);
 
     return this.prisma.organizationChartAdmin.deleteMany({
       where: {
-        project_id: project_id,
+        project_id,
         user_id: {
           in: user_ids.length ? user_ids : undefined,
         },

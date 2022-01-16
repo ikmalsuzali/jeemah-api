@@ -1,16 +1,28 @@
-import { PrismaClient } from '@prisma/client';
+import { PrismaService } from 'nestjs-prisma';
 import { Injectable } from '@nestjs/common';
 import { UpdateAdminProjectDto } from './dto/update-admin-project.dto';
 
 @Injectable()
 export class AdminProjectService {
-  constructor(private readonly prisma: PrismaClient) {}
+  constructor(private readonly prisma: PrismaService) {}
 
-  async findOne(user_id: string, project_id: string) {
-    return await this.prisma.adminProject.findFirst({
+  // async findOne(user_id: string, project_id: string) {
+  //   return await this.prisma.adminProject.findFirst({
+  //     where: {
+  //       user_id,
+  //       project_id,
+  //     },
+  //   });
+  // }
+
+  async findAll(project_id: string) {
+    return await this.prisma.adminProject.findMany({
       where: {
-        user_id,
         project_id,
+      },
+      include: {
+        user: true,
+        project: true,
       },
     });
   }

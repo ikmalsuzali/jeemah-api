@@ -1,10 +1,10 @@
-import { PrismaClient } from '@prisma/client';
+import { PrismaService } from 'nestjs-prisma';
 import { Injectable } from '@nestjs/common';
 import { UpdateUserProjectFollowerDto } from './dto/update-user-project-follower.dto';
 
 @Injectable()
 export class UserProjectFollowerService {
-  constructor(private readonly prisma: PrismaClient) {}
+  constructor(private readonly prisma: PrismaService) {}
 
   async findOne(user_id: string, project_id: string) {
     return await this.prisma.userProjectFollower.findFirst({

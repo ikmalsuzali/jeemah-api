@@ -21,13 +21,15 @@ model Address {
   city       City     @relation(fields: [city_id], references: [id])
   longitude  Float?
   latitude   Float?
+  project_id String?
+  project    Project? @relation(fields: [project_id], references: [id])
   created_at DateTime @default(now())
   updated_at DateTime @updatedAt
   created_by String?
   updated_by String?
-  User       User?
-  Company    Company?
-  Project    Project?
+  user       User?
+  company    Company?
+
 }
 
 model AdminProject {
@@ -87,6 +89,9 @@ model PostCategory {
   id          String   @id @default(cuid())
   name        String
   description String?
+  fallback_image String?
+  project_id String?
+  project Project? @relation(fields: [project_id], references: [id])
   created_at  DateTime @default(now())
   updated_at  DateTime @updatedAt
   created_by  String?
@@ -99,21 +104,18 @@ model Post {
   name                  String
   description           String?
   post_base_category    PostBaseCategory?
-  post_view_type        PostViewType         @default(ALL)
-  post_category         PostCategory?        @relation(fields: [post_category_id], references: [id])
+  post_view_type        ViewType         @default(PUBLIC)
   post_category_id      String
-  has_attendence        Boolean              @default(false)
+  post_category         PostCategory?        @relation(fields: [post_category_id], references: [id])
   start_date            DateTime?
   end_date              DateTime?
-  User                  User?                @relation(fields: [user_id], references: [id])
-  user_id               String?
   project               Project              @relation(fields: [project_id], references: [id])
   project_id            String
   created_at            DateTime             @default(now())
   updated_at            DateTime             @updatedAt
   created_by            String?
+  created_by_user       User?                @relation(fields: [created_by], references: [id])
   updated_by            String?
-  user_post_attendences UserPostAttendence[]
   post_images           PostImage[]
   post_attachments      PostAttachment[]
 }
@@ -136,12 +138,12 @@ model PostAttachment {
   url      String
 }
 
-model UserPostAttendence {
+model UserBookingAttendence {
   id         String   @id @default(cuid())
   user_id    String
   user       User     @relation(fields: [user_id], references: [id])
-  post_id    String
-  post       Post     @relation(fields: [post_id], references: [id])
+  booking_id    String
+  booking       Booking     @relation(fields: [booking_id], references: [id])
   created_at DateTime @default(now())
   updated_at DateTime @updatedAt
   created_by String?
@@ -155,12 +157,10 @@ model Project {
   phone_number              String?
   email                     String
   description               String?
-  address_id                String?                  @unique
-  address                   Address?                 @relation(fields: [address_id], references: [id])
-  currency_id               String
+  currency_id               String?
+  currency                  Currency?                 @relation(fields: [currency_id], references: [id])
   financial_detail_id       String?
-  financial_detail          ProjectFinancialDetails? @relation(fields: [financial_detail_id], references: [id])
-  currency                  Currency                 @relation(fields: [currency_id], references: [id])
+  financial_detail          ProjectFinancialDetail? @relation(fields: [financial_detail_id], references: [id])
   created_at                DateTime                 @default(now())
   updated_at                DateTime                 @updatedAt
   created_by                String?
@@ -170,13 +170,47 @@ model Project {
   admin_projects            AdminProject[]
   project_images            ProjectImage[]
   bookings                  Booking[]
-  booked_rooms              BookedRoom[]
-  rooms                     Room[]
+  // booked_events              BookedEvent[]
+  events                     Event[]
   admin_project_position    OrganizationChartAdmin[]
-  room_rate                 RoomRate[]
+  event_rate                 EventRate[]
+  address Address?
+  post_categories PostCategory[]
 }
 
-model ProjectFinancialDetails {
+model Payment{
+  id           String    @id @default(cuid())
+  reference_no String
+  user_id String?
+  user User? @relation(fields: [user_id], references: [id])
+  // name String?
+  // email String?
+  // phone_number String?
+  response_status Int?
+  payment_method PaymentMethod?
+  payment_status PaymentStatus @default(PENDING)
+  project_id String
+  created_at   DateTime  @default(now())
+  updated_at   DateTime  @updatedAt
+  created_by   String?
+  updated_by   String?
+  receipt Receipt?
+  payment_items PaymentItem[]
+
+}
+
+model PaymentItem {
+  id           String    @id @default(cuid())
+  payment_id String
+  payment Payment @relation(fields: [payment_id], references: [id])
+  created_at   DateTime  @default(now())
+  updated_at   DateTime  @updatedAt
+  created_by   String?
+  updated_by   String?
+
+}
+
+model ProjectFinancialDetail {
   id           String    @id @default(cuid())
   bank_account String?
   ipay88_code  String?
@@ -240,8 +274,9 @@ model User {
   posts                 Post[]
   user_projects         UserProjectFollower[]
   admin_projects        AdminProject[]
-  user_post_attendences UserPostAttendence[]
+  user_booking_attendences UserBookingAttendence[]
   organization_chart_admins OrganizationChartAdmin[]
+  payments Payment[]
 }
 
 model UserInvite {
@@ -256,14 +291,19 @@ model UserInvite {
 model Booking {
   id                    String              @id @default(cuid())
   name                  String
-  reference_no          String?
+  reference_no          String? @unique
   description           String?
   cancelled_description String?
   start_datetime        DateTime
-  end_datetime          DateTime
+  duration_minute       Int
   discount              Int                 @default(0)
   booking_status        BookingStatus       @default(OPEN)
+  event_id String?
+  event Event? @relation(fields: [event_id], references: [id])
+  booking_view_type ViewType @default(PUBLIC)
+  payment_type PaymentType @default(NONE)
   info_color            String?
+  max_attendees Int?
   project_id            String
   project               Project             @relation(fields: [project_id], references: [id])
   created_at            DateTime            @default(now())
@@ -272,6 +312,7 @@ model Booking {
   updated_by            String?
   booking_images        BookingImage[]
   booking_attachments   BookingAttachment[]
+  user_booking_attendences UserBookingAttendence[]
 
 }
 
@@ -285,29 +326,30 @@ model BookingImage {
   updated_at DateTime @updatedAt
 }
 
-model BookedRoom {
-  id         String   @id @default(cuid())
-  project_id String
-  project    Project  @relation(fields: [project_id], references: [id])
-  created_at DateTime @default(now())
-  updated_at DateTime @updatedAt
-  created_by String?
-  updated_by String?
+// model BookedEvent {
+//   id         String   @id @default(cuid())
+//   project_id String
+//   project    Project  @relation(fields: [project_id], references: [id])
+//   created_at DateTime @default(now())
+//   updated_at DateTime @updatedAt
+//   created_by String?
+//   updated_by String?
 
-}
+// }
 
-model Room {
+model Event {
   id              String    @id @default(cuid())
   name            String
   description     String?
   minute_duration Int       @default(30)
-  room_rate       RoomRate?
+  event_rate       EventRate?
   project_id      String
   project         Project   @relation(fields: [project_id], references: [id])
   created_at      DateTime  @default(now())
   updated_at      DateTime  @updatedAt
   created_by      String?
   updated_by      String?
+  bookings Booking[]
 }
 
 model OrganizationChartAdmin {
@@ -325,11 +367,14 @@ model OrganizationChartAdmin {
 
 }
 
-model RoomRate {
+model EventRate {
   id             String       @id @default(cuid())
-  room_id        String
-  room           Room         @relation(fields: [room_id], references: [id])
-  room_rate_type RoomRateType
+  name String
+  description String?
+  rate_amount Int
+  event_id        String?
+  event           Event?         @relation(fields: [event_id], references: [id])
+  event_rate_type EventRateType
   project_id     String
   project        Project      @relation(fields: [project_id], references: [id])
   created_at     DateTime     @default(now())
@@ -346,8 +391,7 @@ model Currency {
   updated_at DateTime @updatedAt
   created_by String?
   updated_by String?
-
-  Project Project[]
+  project Project[]
 }
 
 model BookingAttachment {
@@ -358,6 +402,45 @@ model BookingAttachment {
   url        String
   created_at DateTime @default(now())
   updated_at DateTime @updatedAt
+}
+
+model Receipt {
+  id         String   @id @default(cuid())
+  reference_no String?
+  user_id String
+  payment_id String?
+  payment Payment? @relation(fields: [payment_id], references: [id])
+  project_id String
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
+  created_by String?
+  updated_by String?
+}
+
+model Invoice {
+  id         String   @id @default(cuid())
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
+  created_by String?
+  updated_by String?
+}
+
+enum PaymentType {
+  NONE
+  DONATION
+  SERVICE
+}
+
+enum PaymentStatus {
+  CANCELLED
+  PENDING
+  SUCCESS
+  FAILED
+}
+
+enum PaymentMethod {
+  CASH
+  IPAY88
 }
 
 enum Role {
@@ -377,10 +460,12 @@ enum PostBaseCategory {
   LINKS
 }
 
-enum PostViewType {
-  FOLLOWERS
-  INTERNAL
-  ALL
+enum ViewType {
+  FOLLOWERS_PUBLIC
+  FOLLOWERS_PRIVATE
+  INTERNAL_PUBLIC
+  INTERNAL_PRIVATE
+  PUBLIC
 }
 
 enum BookingStatus {
@@ -389,13 +474,13 @@ enum BookingStatus {
   CANCELLED
 }
 
-enum RoomRateType {
+enum EventRateType {
   DAILY_PER_USER
   ONE_OFF_PER_USER
-  ONE_OFF_PER_ROOM
+  ONE_OFF_PER_EVENT
 }
 
-enum RoomType {
+enum EventType {
   PUBLIC
   PRIVATE
   INTERNAL
