@@ -9,10 +9,12 @@ import {
   NestConfig,
   SwaggerConfig,
 } from './configs/config.interface';
+const requestIp = require('request-ip');
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
-
+  // Request ip
+  app.use(requestIp.mw())
   // Validation
   app.useGlobalPipes(new ValidationPipe());
 
@@ -28,8 +30,8 @@ async function bootstrap() {
   // Swagger Api
   if (swaggerConfig.enabled) {
     const options = new DocumentBuilder()
-      .setTitle(swaggerConfig.title || 'Nestjs')
-      .setDescription(swaggerConfig.description || 'The nestjs API description')
+      .setTitle(swaggerConfig.title || 'JEMAAH')
+      .setDescription(swaggerConfig.description || 'MOSQUE MANAGEMENT APP')
       .setVersion(swaggerConfig.version || '1.0')
       .build();
     const document = SwaggerModule.createDocument(app, options);

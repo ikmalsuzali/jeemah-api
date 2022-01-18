@@ -9,11 +9,11 @@ import { join } from 'path';
       // transport: 'smtps://user@example.com:topsecret@smtp.example.com',
       // or
       transport: {
-        host: 'smtp.example.com',
+        host: process.env.MAIL_HOST,
         secure: false,
         auth: {
-          user: 'user@example.com',
-          pass: 'topsecret',
+          user: process.env.MAIL_USER,
+          pass: process.env.MAIL_PASSWORD,
         },
       },
       defaults: {
@@ -30,5 +30,4 @@ import { join } from 'path';
   providers: [MailService],
   exports: [MailService], // 👈 export for DI
 })
-
 export class MailModule {}

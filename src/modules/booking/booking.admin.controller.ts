@@ -1,19 +1,23 @@
+import { ApiOperation, ApiTags } from '@nestjs/swagger';
 import { GetBookingDto } from './dto/get-booking.dto';
 import { Controller, Get, Post, Body, Patch, Param, Delete, Query } from '@nestjs/common';
 import { BookingService } from './booking.service';
 import { CreateBookingDto } from './dto/create-booking.dto';
 import { UpdateBookingDto } from './dto/update-booking.dto';
 
-@Controller('booking')
-export class BookingController {
+@ApiTags('Admin Booking')
+@Controller('admin/booking')
+export class BookingAdminController {
   constructor(private readonly bookingService: BookingService) {}
 
   @Post()
+  @ApiOperation({ summary: 'AS AN ADMIN, I CAN CREATE A BOOKING' })
   create(@Body() createBookingDto: CreateBookingDto) {
     return this.bookingService.create(createBookingDto);
   }
 
   @Get()
+  @ApiOperation({ summary: 'AS AN ADMIN, I CAN GET ALL BOOKINGS' })
   findAll(@Query() getBookingDto: GetBookingDto) {
     return this.bookingService.findAll(getBookingDto);
   }

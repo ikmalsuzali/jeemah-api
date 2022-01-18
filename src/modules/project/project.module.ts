@@ -1,10 +1,11 @@
+import { ProjectUserController } from './project.user.controller';
 import { AddressService } from '../address/address.service';
 import { Module } from '@nestjs/common';
 import { ProjectService } from './project.service';
-import { ProjectController } from './project.controller';
+import { ProjectAdminController } from './project.admin.controller';
 
 @Module({
-  controllers: [ProjectController],
+  controllers: [ProjectAdminController, ProjectUserController],
   providers: [ProjectService, AddressService]
 })
 export class ProjectModule {}

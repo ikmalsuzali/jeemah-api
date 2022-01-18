@@ -1,16 +1,30 @@
+import { CreateAddressDto } from '../../address/dto/create-address.dto';
+import { IsString, IsOptional, IsPhoneNumber, IsNotEmpty, IsEmail, IsObject, ValidateNested } from 'class-validator';
+import { ApiProperty } from '@nestjs/swagger';
 export class CreateProjectDto {
-  name: string
-  registration_no?: string
-  phone_number?: string
-  email: string
-  description: string
-  address: {
-    address_id: string
-    address: string
-    postcode?: string
-    city_id: string
-    longitude?: number
-    latitude?: number
-    project_id: string
-  }
+  @ApiProperty()
+  @IsString()
+  name: string;
+
+  @ApiProperty()
+  @IsOptional()
+  registration_no?: string;
+
+  @ApiProperty()
+  @IsNotEmpty()
+  @IsPhoneNumber()
+  @IsOptional()
+  phone_number?: string;
+
+  @ApiProperty()
+  @IsEmail()
+  email: string;
+
+  @ApiProperty()
+  @IsString()
+  description: string;
+
+  @ApiProperty()
+  @ValidateNested()
+  address: CreateAddressDto
 }

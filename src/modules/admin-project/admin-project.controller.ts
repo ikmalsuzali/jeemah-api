@@ -1,8 +1,10 @@
 import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import { ApiTags } from '@nestjs/swagger';
 import { AdminProjectService } from './admin-project.service';
 import { CreateAdminProjectDto } from './dto/create-admin-project.dto';
 import { UpdateAdminProjectDto } from './dto/update-admin-project.dto';
 
+@ApiTags('Admin Projects')
 @Controller('admin-projects')
 export class AdminProjectController {
   constructor(private readonly adminProjectService: AdminProjectService) {}
@@ -18,12 +20,11 @@ export class AdminProjectController {
   }
 
   @Patch()
-  update(
-    @Body() updateAdminProjectDto: UpdateAdminProjectDto
-  ) {
+  update(@Body() updateAdminProjectDto: UpdateAdminProjectDto) {
     return this.adminProjectService.update(updateAdminProjectDto);
   }
 
+  @Delete()
   remove(@Body() user_id: string, project_ids: string[]) {
     return this.adminProjectService.remove(user_id, project_ids);
   }

@@ -1,10 +1,12 @@
+import { GetLocationProjectDto } from './dto/get-location-project';
+import { GetProjectDto } from './../project/dto/get-project.dto';
 import { AddressService } from '../address/address.service';
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from 'nestjs-prisma';
 import { CreateProjectDto } from './dto/create-project.dto';
 import { UpdateProjectDto } from './dto/update-project.dto';
 import { Prisma } from '@prisma/client'
-
+import geoip from 'geoip-lite';
 
 @Injectable()
 export class ProjectService {
@@ -44,14 +46,31 @@ export class ProjectService {
     });
   }
 
-  async findAllByRadius(longitude: number, latitude: number, radius: number, is_metric: boolean){
-    return await this.prisma.$queryRaw(
-      Prisma.sql`SELECT *,(point(longitude, latitude) <@> point(${longitude}, ${latitude}))  * 1000 AS distance
-        FROM Projects
-        WHERE (point(longitude, latitude) <@> point(${longitude}, ${latitude})) <= ${radius} * ${
-        is_metric ? 1000 : 1609.34
-      }`
-    );
+  async findAllByRadius(getLocationProjectDto: GetLocationProjectDto) {
+    const { ip_address, radius, is_metric, longitude, latitude } = getLocationProjectDto
+    let lon = longitude;
+    let lat = latitude;
+    // FALLBACK TO IP_ADDRESS
+    if (!longitude || !latitude) {
+      if (ip_address) {
+        let geo = null;
+        try {
+          geo = await geoip.lookup(ip_address);
+        } catch {}
+
+        if (geo) {
+          lon = geo.ll[0];
+          lat = geo.ll[1];
+        }
+      }
+    }
+    if (lon && lat) {
+      return await this.prisma.$queryRaw`SELECT *, (point(longitude, latitude) <@> point(${lon}, ${lat})) AS distance
+          FROM "Address"
+          WHERE (point(longitude, latitude) <@> point(${lon}, ${lat})) <= 
+          ${radius * (is_metric ? 1000 : 1609.34)
+        }`
+    }
   }
 
   async findOne(id: string) {
