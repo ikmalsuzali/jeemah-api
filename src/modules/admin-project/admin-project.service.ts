@@ -1,6 +1,7 @@
 import { PrismaService } from 'nestjs-prisma';
 import { Injectable } from '@nestjs/common';
 import { UpdateAdminProjectDto } from './dto/update-admin-project.dto';
+import { GetAdminProjectDto } from './dto/get-admin-project.dto';
 
 @Injectable()
 export class AdminProjectService {
@@ -15,23 +16,41 @@ export class AdminProjectService {
   //   });
   // }
 
-  async findAll(project_id: string) {
-    return await this.prisma.adminProject.findMany({
+  async findAllByUser(getAdminProjectDto: GetAdminProjectDto) {
+    const { user_id } = getAdminProjectDto
+    return await this.prisma.userProjectFollower.findMany({
       where: {
-        project_id,
+        user_id: user_id || undefined,
       },
       include: {
-        user: true,
-        project: true,
+        project: true
+      }
+    });
+  }
+
+async findAllByProject(getAdminProjectDto: GetAdminProjectDto) {
+    const { project_id } = getAdminProjectDto
+    return await this.prisma.userProjectFollower.findFirst({
+      where: {
+        project_id: project_id || undefined
       },
+      include: {
+        user: true
+      }
     });
   }
 
   // USE CASE: As an admin, I can add other admins to the mosque
   async update(updateAdminProjectDto: UpdateAdminProjectDto) {
-    const { user_id, project_ids } = updateAdminProjectDto;
+    let { user_id, project_ids } = updateAdminProjectDto;
     if (!project_ids.length) return;
     let adminProjects = [];
+    const getAdminProjectDto: GetAdminProjectDto = {
+      user_id: user_id
+    }
+
+    // Remove any duplicates
+    project_ids = [...new Set(project_ids)]
 
     project_ids.forEach((project_id) => {
       adminProjects.push({
@@ -42,9 +61,12 @@ export class AdminProjectService {
 
     await this.remove(user_id, []);
 
-    return await this.prisma.adminProject.createMany({
+    await this.prisma.adminProject.createMany({
       data: adminProjects,
     });
+
+    return await this.findAllByUser(getAdminProjectDto)
+
   }
 
   remove(user_id: string, project_ids: string[]) {

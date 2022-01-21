@@ -1,9 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { IsString, isDecimal, IsOptional, IsLongitude, IsNotEmpty, IsLatitude } from 'class-validator'
 export class CreateAddressDto {
-  @ApiProperty()
-  @IsString()
-  address_id?: string;
 
   @ApiProperty()
   @IsString()
@@ -31,6 +28,6 @@ export class CreateAddressDto {
   latitude?: number;
   
   @ApiProperty()
-  @IsString()
-  project_id: string;
+  @IsOptional()
+  project_id?: string;
 }

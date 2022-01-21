@@ -17,20 +17,25 @@ export class ProjectService {
 
   // USE CASE: AS AN SUPERADMIN I CAN CREATE A PROJECT
   async create(createProjectDto: CreateProjectDto) {
-    let address: any = this.addressService.create(createProjectDto.address);
-    return this.prisma.project.create({
+    const { name, registration_no, phone_number, email, description, address } = createProjectDto
+    return await this.prisma.project.create({
       data: {
-        ...createProjectDto,
+        name,
+        registration_no,
+        phone_number,
+        email,
+        description,
         address: {
-          connect: {
-            id: address.id,
+          create: {
+            ...address
           },
         },
       },
     });
   }
 
-  async findAll(search?: string, city_id?: string) {
+  async findAll(getProjectDto: GetProjectDto) {
+    const {search, city_id} = getProjectDto
     return await this.prisma.project.findMany({
       where: {
         name: {
@@ -42,6 +47,7 @@ export class ProjectService {
       },
       include: {
         address: true,
+        financial_detail: true
       },
     });
   }
@@ -73,17 +79,29 @@ export class ProjectService {
     }
   }
 
-  async findOne(id: string) {
+  async findOne(id: string, has: string[]) {
     return await this.prisma.project.findUnique({
       where: { id },
-      include: { address: true },
+      include: {
+        address: has.includes('address'),
+        financial_detail: has.includes('financial_detail'),
+        post: has.includes('post'),
+        user_project_followers: has.includes('user_project_followers'),
+        admin_projects: has.includes('admin_projects'),
+        project_images: has.includes('project_images'),
+        bookings: has.includes('bookings'),
+        events: has.includes('events'),
+        admin_project_position: has.includes('admin_project_position'),
+        event_rate: has.includes('event_rate'),
+        post_categories: has.includes('post_categories')
+      },
     });
   }
 
   // USE CASE: As an admin, I can update my mosque details
   // USE CASE: As an admin, I can add the address and exact location of the mosque
   async update(id: string, updateProjectDto: UpdateProjectDto) {
-    const project: any = this.findOne(id);
+    const project: any = this.findOne(id, []);
     const address = await this.addressService.update(
       project.address.id,
       updateProjectDto.address
@@ -106,11 +124,11 @@ export class ProjectService {
 
   // USE CASE: As an super-admin, I can delete the mosque
   async remove(id: string) {
-    const project: any = this.findOne(id);
+    const project: any = await this.findOne(id, ['address']);
     await this.prisma.address.delete({
-      where: { id: project.address.id },
+      where: { id: project?.address?.id },
     });
-    return this.prisma.project.delete({
+    return await this.prisma.project.delete({
       where: { id },
     });
   }

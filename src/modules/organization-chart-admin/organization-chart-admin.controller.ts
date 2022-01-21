@@ -1,7 +1,8 @@
 import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
 import { OrganizationChartAdminService } from './organization-chart-admin.service';
 import { UpdateOrganizationChartAdminDto } from './dto/update-organization-chart-admin.dto';
-
+import { ApiOperation, ApiTags } from '@nestjs/swagger';
+@ApiTags('Admin Organization Chart')
 @Controller('admin/organization-chart')
 export class OrganizationChartAdminController {
   constructor(
@@ -9,6 +10,7 @@ export class OrganizationChartAdminController {
   ) {}
 
   @Get(':project_id')
+  @ApiOperation({ summary: 'AS A ADMIN, I CAN VIEW MY ORGANIZATIONAL CHART' })
   findAll(@Param('project_id') project_id: string) {
     return this.organizationChartAdminService.findAll(project_id);
   }

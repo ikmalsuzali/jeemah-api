@@ -11,6 +11,9 @@ export class OrganizationChartAdminService {
       where: {
         project_id: project_id,
       },
+      include: {
+        user: true
+      }
     });
   }
 
@@ -20,22 +23,24 @@ export class OrganizationChartAdminService {
   ) {
     const { users } = updateOrganizationChartAdminDto;
     if (!users.length) return;
-    let organizationUsers = [];
+    let organizationUsers = []
 
-    users.forEach((user) => {
+    users.forEach((user, index) => {
       organizationUsers.push({
+        order: index,
         name: user.name,
         user_id: user.id,
-        order: user.order || 0,
         project_id: project_id,
       });
     });
 
     await this.remove(project_id, updateOrganizationChartAdminDto);
 
-    return await this.prisma.organizationChartAdmin.createMany({
+    await this.prisma.organizationChartAdmin.createMany({
       data: organizationUsers,
     });
+
+    return await this.findAll(project_id)
   }
 
   remove(

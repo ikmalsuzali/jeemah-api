@@ -20,8 +20,8 @@ export class ProjectUserController {
   constructor(private readonly projectService: ProjectService) {}
 
   @Get()
-  findAll(@Query() search?: string, city_id?: string) {
-    return this.projectService.findAll(search, city_id);
+  findAll(@Query() getProjectDto: GetProjectDto) {
+    return this.projectService.findAll(getProjectDto);
   }
 
   @Get('/nearby')
@@ -40,6 +40,6 @@ export class ProjectUserController {
 
   @Get(':id')
   findOne(@Param('id') id: string) {
-    return this.projectService.findOne(id);
+    return this.projectService.findOne(id, []);
   }
 }

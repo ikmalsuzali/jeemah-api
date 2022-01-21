@@ -18,14 +18,14 @@ export class ProjectAdminController {
 
   @Get()
   @ApiOperation({ summary: 'AS A SUPERADMIN, I CAN FIND ALL PROJECTS' })
-  findAll(@Query() search?: string, city_id?: string) {
-    return this.projectService.findAll(search, city_id);
+  findAll(@Query() getProjectDto: GetProjectDto) {
+    return this.projectService.findAll(getProjectDto);
   }
 
   @ApiOperation({ summary: 'AS A ADMIN, I CAN VIEW PROJECT DETAILS' })
   @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.projectService.findOne(id);
+  findOne(@Param('id') id: string, @Query('has') has: string[]) {
+    return this.projectService.findOne(id, has || []);
   }
 
   @Patch(':id')
@@ -33,4 +33,11 @@ export class ProjectAdminController {
   update(@Param('id') id: string, @Body() updateProjectDto: UpdateProjectDto) {
     return this.projectService.update(id, updateProjectDto);
   }
+
+  @Delete(':id')
+  @ApiOperation({ summary: 'AS A SUPERADMIN, I CAN DELETE MY PROJECT' })
+  remove(@Param('id') id: string) {
+    return this.projectService.remove(id);
+  }
+  
 }

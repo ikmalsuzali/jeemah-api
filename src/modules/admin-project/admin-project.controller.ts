@@ -2,10 +2,11 @@ import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/commo
 import { ApiTags } from '@nestjs/swagger';
 import { AdminProjectService } from './admin-project.service';
 import { CreateAdminProjectDto } from './dto/create-admin-project.dto';
+import { GetAdminProjectDto } from './dto/get-admin-project.dto';
 import { UpdateAdminProjectDto } from './dto/update-admin-project.dto';
 
 @ApiTags('Admin Projects')
-@Controller('admin-projects')
+@Controller('admin/projects/me')
 export class AdminProjectController {
   constructor(private readonly adminProjectService: AdminProjectService) {}
 
@@ -15,8 +16,8 @@ export class AdminProjectController {
   // }
 
   @Get()
-  findAll(@Body() project_id: string) {
-    return this.adminProjectService.findAll(project_id);
+  findAll(@Body() getAdminProjectDto: GetAdminProjectDto) {
+    return this.adminProjectService.findAllByProject(getAdminProjectDto);
   }
 
   @Patch()
@@ -24,8 +25,8 @@ export class AdminProjectController {
     return this.adminProjectService.update(updateAdminProjectDto);
   }
 
-  @Delete()
-  remove(@Body() user_id: string, project_ids: string[]) {
-    return this.adminProjectService.remove(user_id, project_ids);
-  }
+  // @Delete()
+  // remove(@Body() user_id: string, project_ids: string[]) {
+  //   return this.adminProjectService.remove(user_id, project_ids);
+  // }
 }
