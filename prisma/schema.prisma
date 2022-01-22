@@ -100,21 +100,23 @@ model PostCategory {
 }
 
 model Post {
-  id                 String            @id @default(cuid())
+  id                 String           @id @default(cuid())
   name               String
   description        String?
-  post_base_category PostBaseCategory?
-  post_view_type     ViewType          @default(PUBLIC)
-  post_category_id   String
-  post_category      PostCategory?     @relation(fields: [post_category_id], references: [id])
+  post_base_category PostBaseCategory
+  post_view_type     ViewType         @default(PUBLIC)
+  post_category_id   String?
+  post_category      PostCategory?    @relation(fields: [post_category_id], references: [id])
+  booking_id         String?
+  booking            Booking?         @relation(fields: [booking_id], references: [id])
   start_date         DateTime?
   end_date           DateTime?
-  project            Project           @relation(fields: [project_id], references: [id])
+  project            Project          @relation(fields: [project_id], references: [id])
   project_id         String
-  created_at         DateTime          @default(now())
-  updated_at         DateTime          @updatedAt
+  created_at         DateTime         @default(now())
+  updated_at         DateTime         @updatedAt
   created_by         String?
-  created_by_user    User?             @relation(fields: [created_by], references: [id])
+  created_by_user    User?            @relation(fields: [created_by], references: [id])
   updated_by         String?
   post_images        PostImage[]
   post_attachments   PostAttachment[]
@@ -313,6 +315,7 @@ model Booking {
   booking_images           BookingImage[]
   booking_attachments      BookingAttachment[]
   user_booking_attendences UserBookingAttendence[]
+  posts                    Post[]
 
 }
 
@@ -342,7 +345,8 @@ model Event {
   name            String
   description     String?
   minute_duration Int        @default(30)
-  event_rate      EventRate?
+  event_rate_id   String?    @unique
+  event_rate      EventRate? @relation(fields: [event_rate_id], references: [id])
   project_id      String
   project         Project    @relation(fields: [project_id], references: [id])
   created_at      DateTime   @default(now())
@@ -373,8 +377,7 @@ model EventRate {
   name            String
   description     String?
   rate_amount     Int
-  event_id        String?       @unique
-  event           Event?        @relation(fields: [event_id], references: [id])
+  events          Event[]
   event_rate_type EventRateType
   project_id      String
   project         Project       @relation(fields: [project_id], references: [id])

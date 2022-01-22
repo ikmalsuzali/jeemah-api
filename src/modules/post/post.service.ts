@@ -18,19 +18,24 @@ export class PostService {
       post_category_id,
       start_date,
       end_date,
+      booking_id,
       project_id,
     } = createPostDto;
-    this.prisma.post.create({
+    return this.prisma.post.create({
       data: {
         name: name,
         description: description,
         post_base_category: post_base_category,
         post_view_type: post_view_type,
-        post_category: {
-          connect: { id: post_category_id },
-        },
         start_date: start_date,
         end_date: end_date,
+        post_category:
+          post_category_id ? {
+            connect: { id: post_category_id}
+          } : undefined,
+        booking: booking_id ? {
+          connect: {id: booking_id || undefined}
+        }: undefined,
         project: {
           connect: { id: project_id },
         },
@@ -39,36 +44,32 @@ export class PostService {
   }
 
   async findAll(getPostDto: GetPostDto) {
-    const { search, project_id, post_base_category, post_view_type, post_category_id} = getPostDto
+    const { search, project_id, post_base_category, post_view_type, post_category_id, start_date, end_date } = getPostDto
+    console.log(start_date)
     return await this.prisma.post.findMany({
       where: {
-        OR: [
-          {
-            name: {
-              search: search || undefined,
-            },
-          },
-          {
-            description: {
-              search: search || undefined,
-            },
-          },
-        ],
-        AND: [
-          {
-            project_id: project_id,
-          },
-          {
-            post_base_category: post_base_category || undefined,
-          },
-          {
-            post_view_type: post_view_type || undefined,
-          },
-          {
-            post_category_id: post_category_id || undefined,
-          },
-        ],
+        name: {
+          search: search || undefined,
+        },
+        description: {
+          search: search || undefined,
+        },
+        start_date: {
+          lte: start_date || undefined
+        },
+        end_date: !end_date ? {
+          gte: end_date || undefined
+        } : undefined,
+        project_id,
+        post_base_category: post_base_category || undefined,
+        post_view_type: post_view_type || undefined, 
+        post_category_id: post_category_id || undefined,
       },
+      include: {
+        post_images: true,
+        post_attachments: true
+      }
+         
     });
   }
 
@@ -91,6 +92,7 @@ export class PostService {
       post_category_id,
       start_date,
       end_date,
+      booking_id,
       project_id,
     } = updatePostDto;
 
@@ -99,16 +101,16 @@ export class PostService {
       data: {
         name: name,
         description: description,
-        post_base_category: post_base_category,
         post_view_type: post_view_type,
-        post_category: {
-          connect: { id: post_category_id },
-        },
         start_date: start_date,
         end_date: end_date,
-        project: {
-          connect: { id: project_id },
-        },
+        post_category:
+          post_category_id ? {
+            connect: { id: post_category_id}
+          } : undefined,
+        booking: booking_id ? {
+          connect: {id: booking_id || undefined}
+        }: undefined,
       },
     });
   }

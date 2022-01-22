@@ -1,9 +1,9 @@
 import { Module } from '@nestjs/common';
 import { EventRateService } from './event-rate.service';
-import { EventRateController } from './event-rate.controller';
+import { EventRateAdminController } from './event-rate.admin.controller';
 
 @Module({
-  controllers: [EventRateController],
+  controllers: [EventRateAdminController],
   providers: [EventRateService]
 })
 export class EventRateModule {}

@@ -93,10 +93,12 @@ Table Post {
   id String [pk]
   name String [not null]
   description String
-  post_base_category PostBaseCategory
+  post_base_category PostBaseCategory [not null]
   post_view_type ViewType [not null, default: 'PUBLIC']
-  post_category_id String [not null]
+  post_category_id String
   post_category PostCategory
+  booking_id String
+  booking Booking
   start_date DateTime
   end_date DateTime
   project Project [not null]
@@ -300,6 +302,7 @@ Table Booking {
   booking_images BookingImage [not null]
   booking_attachments BookingAttachment [not null]
   user_booking_attendences UserBookingAttendence [not null]
+  posts Post [not null]
 }
 
 Table BookingImage {
@@ -317,6 +320,7 @@ Table Event {
   name String [not null]
   description String
   minute_duration Int [not null, default: 30]
+  event_rate_id String [unique]
   event_rate EventRate
   project_id String [not null]
   project Project [not null]
@@ -347,8 +351,7 @@ Table EventRate {
   name String [not null]
   description String
   rate_amount Int [not null]
-  event_id String [unique]
-  event Event
+  events Event [not null]
   event_rate_type EventRateType [not null]
   project_id String [not null]
   project Project [not null]
@@ -494,6 +497,8 @@ Ref: PostCategory.project_id > Project.id
 
 Ref: Post.post_category_id > PostCategory.id
 
+Ref: Post.booking_id > Booking.id
+
 Ref: Post.project_id > Project.id
 
 Ref: Post.created_by > User.id
@@ -530,13 +535,13 @@ Ref: Booking.project_id > Project.id
 
 Ref: BookingImage.booking_id > Booking.id
 
+Ref: Event.event_rate_id > EventRate.id
+
 Ref: Event.project_id > Project.id
 
 Ref: OrganizationChartAdmin.user_id > User.id
 
 Ref: OrganizationChartAdmin.project_id > Project.id
-
-Ref: EventRate.event_id - Event.id
 
 Ref: EventRate.project_id > Project.id
 

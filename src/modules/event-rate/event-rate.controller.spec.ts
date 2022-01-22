@@ -1,5 +1,5 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { EventRateController } from './event-rate.controller';
+import { EventRateController } from './event-rate.admin.controller';
 import { EventRateService } from './event-rate.service';
 
 describe('EventRateController', () => {

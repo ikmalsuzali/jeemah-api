@@ -54,7 +54,7 @@ export class BookingService {
     });
   }
 
-  findAll(getBookingDto: GetBookingDto) {
+  async findAll(getBookingDto: GetBookingDto) {
     const {
       project_id,
       booking_status,
@@ -65,40 +65,21 @@ export class BookingService {
       event_id,
     } = getBookingDto;
     
-    return this.prisma.booking.findMany({
+    return await this.prisma.booking.findMany({
       where: {
-        OR: [
-          {
-            name: {
+          name: {
               search: search || undefined,
-            },
           },
-          {
-            description: {
-              search: search || undefined,
-            },
+          description: {
+            search: search || undefined,
           },
-        ],
-        AND: [
-          {
-            project_id: project_id,
-          },
-          {
-            booking_status: booking_status,
-          },
-          {
-            booking_view_type: booking_view_type,
-          },
-          {
-            start_datetime: start_datetime || undefined
-          },
-          {
-            start_datetime: end_datetime || undefined
-          },
-          {
-            event_id: event_id || undefined
-          }
-        ],
+          project_id,
+          booking_status,
+          booking_view_type,
+          start_datetime: {
+            gte: start_datetime || undefined, 
+          },       
+          event_id: event_id || undefined
       },
     });
   }
@@ -110,7 +91,8 @@ export class BookingService {
         event: true,
         booking_images: true,
         booking_attachments: true,
-        user_booking_attendences: true
+        user_booking_attendences: true,
+        posts: true
        }
     });
   }

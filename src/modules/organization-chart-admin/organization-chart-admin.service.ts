@@ -47,8 +47,6 @@ export class OrganizationChartAdminService {
     project_id: string,
     user_ids: string[]
   ) {
-
-
     return this.prisma.organizationChartAdmin.deleteMany({
       where: {
         project_id,
