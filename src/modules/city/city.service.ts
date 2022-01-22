@@ -1,4 +1,4 @@
-import { FilterCityDto } from './dto/filter-city.dto';
+import { GetCityDto } from './dto/get-city.dto';
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from 'nestjs-prisma';
 
@@ -6,16 +6,19 @@ import { PrismaService } from 'nestjs-prisma';
 export class CityService {
   constructor(private prisma: PrismaService) {}
 
-  async getAllCities(filterCityDto: FilterCityDto) {
+  async getAllCities(getCityDto: GetCityDto) {
+    const {country_id, state_id} = getCityDto
     let query: any = {
-      where: {},
+      where: {
+        country_id,
+        state_id
+      },
       include: {
         country: true,
         state: true,
       },
     };
-    if (filterCityDto.country_id) query.where.country_id = filterCityDto.country_id;
-    if (filterCityDto.state_id) query.where.state_id = filterCityDto.state_id;
+  
     return await this.prisma.city.findMany(query);
   }
 

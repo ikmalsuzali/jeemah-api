@@ -1,7 +1,7 @@
 class UserDto {
     name: string
     id?: string
-    order?: Number
+    order?: number
 }
 
 export class CreateOrganizationChartAdminDto {

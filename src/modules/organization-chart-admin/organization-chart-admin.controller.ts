@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, HttpException, HttpStatus } from '@nestjs/common';
 import { OrganizationChartAdminService } from './organization-chart-admin.service';
 import { UpdateOrganizationChartAdminDto } from './dto/update-organization-chart-admin.dto';
 import { ApiOperation, ApiTags } from '@nestjs/swagger';
@@ -11,8 +11,13 @@ export class OrganizationChartAdminController {
 
   @Get(':project_id')
   @ApiOperation({ summary: 'AS A ADMIN, I CAN VIEW MY ORGANIZATIONAL CHART' })
-  findAll(@Param('project_id') project_id: string) {
-    return this.organizationChartAdminService.findAll(project_id);
+  async findAll(@Param('project_id') project_id: string) {
+
+    const organizationalChatPersons = await this.organizationChartAdminService.findAll(project_id);
+    if (!organizationalChatPersons.length) {
+      throw new HttpException('Record not found', HttpStatus.BAD_REQUEST);
+    }
+    return organizationalChatPersons
   }
 
   @Patch(':project_id')
@@ -29,11 +34,11 @@ export class OrganizationChartAdminController {
   @Delete(':project_id')
   remove(
     @Param('project_id') id: string,
-    @Body() updateOrganizationChartAdminDto: UpdateOrganizationChartAdminDto
+    @Body('user_ids') user_ids: string[]
   ) {
     return this.organizationChartAdminService.remove(
       id,
-      updateOrganizationChartAdminDto
+      user_ids
     );
   }
 }

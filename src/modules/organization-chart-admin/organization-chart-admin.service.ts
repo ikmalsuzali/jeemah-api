@@ -27,14 +27,14 @@ export class OrganizationChartAdminService {
 
     users.forEach((user, index) => {
       organizationUsers.push({
-        order: index,
+        order: user.order,
         name: user.name,
-        user_id: user.id,
+        // user_id: user.id,
         project_id: project_id,
       });
     });
 
-    await this.remove(project_id, updateOrganizationChartAdminDto);
+    await this.remove(project_id, []);
 
     await this.prisma.organizationChartAdmin.createMany({
       data: organizationUsers,
@@ -45,10 +45,9 @@ export class OrganizationChartAdminService {
 
   remove(
     project_id: string,
-    updateOrganizationChartAdminDto: UpdateOrganizationChartAdminDto
+    user_ids: string[]
   ) {
-    const { users } = updateOrganizationChartAdminDto;
-    const user_ids = users.map((user) => user.id);
+
 
     return this.prisma.organizationChartAdmin.deleteMany({
       where: {
