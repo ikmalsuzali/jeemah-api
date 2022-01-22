@@ -3,7 +3,7 @@ import { Controller, Get, Post, Body, Patch, Param, Delete, Query } from '@nestj
 import { StateService } from './state.service';
 import { ApiOperation, ApiTags } from '@nestjs/swagger';
 
-@ApiTags('Locality: States')
+@ApiTags('Locality: State')
 @Controller('states')
 export class StateController {
   constructor(private readonly stateService: StateService) {}

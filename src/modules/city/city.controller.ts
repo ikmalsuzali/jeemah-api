@@ -9,7 +9,7 @@ export class CityController {
   constructor(private readonly cityService: CityService) {}
 
   @Get()
-  @ApiOperation({ summary: 'AS A USER, I CAN A CITY'})
+  @ApiOperation({ summary: 'AS A USER, I CAN FIND ALL CITY'})
   getCities(@Query() getCityDto: GetCityDto) {
     return this.cityService.getAllCities(getCityDto);
   }

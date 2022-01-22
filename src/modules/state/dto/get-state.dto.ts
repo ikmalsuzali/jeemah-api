@@ -1,7 +1,7 @@
-import { IsString } from 'class-validator'
+import { IsOptional, IsString } from 'class-validator'
 import { ApiProperty } from '@nestjs/swagger';
 export class GetStateDto {
     @ApiProperty()
-    @IsString()
-    country_id: String
+    @IsOptional()
+    country_id?: String
 }
