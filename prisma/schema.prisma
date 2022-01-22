@@ -87,7 +87,7 @@ model Company {
 
 model PostCategory {
   id             String   @id @default(cuid())
-  name           String
+  name           String   @unique
   description    String?
   fallback_image String?
   project_id     String?
@@ -353,17 +353,18 @@ model Event {
 }
 
 model OrganizationChartAdmin {
-  id         String   @id @default(cuid())
-  order      Int
-  name       String
-  user_id    String?
-  user       User?    @relation(fields: [user_id], references: [id])
-  project_id String
-  project    Project  @relation(fields: [project_id], references: [id])
-  created_at DateTime @default(now())
-  updated_at DateTime @updatedAt
-  created_by String?
-  updated_by String?
+  id                       String                 @id @default(cuid())
+  order                    Int
+  name                     String
+  user_id                  String?
+  user                     User?                  @relation(fields: [user_id], references: [id])
+  organization_person_type OrganizationPersonType @default(COMMITTEE_MEMBER)
+  project_id               String
+  project                  Project                @relation(fields: [project_id], references: [id])
+  created_at               DateTime               @default(now())
+  updated_at               DateTime               @updatedAt
+  created_by               String?
+  updated_by               String?
 
 }
 
@@ -385,6 +386,7 @@ model EventRate {
 
 model Currency {
   id         String    @id @default(cuid())
+  name       String
   code       String
   symbol     String
   created_at DateTime  @default(now())
@@ -490,4 +492,12 @@ enum AcceptanceStatus {
   CONFIRMED
   PENDING
   DECLINED
+}
+
+enum OrganizationPersonType {
+  CHAIRMAN
+  VICE_CHAIRMAN
+  TREASURER
+  SECRETARY
+  COMMITTEE_MEMBER
 }

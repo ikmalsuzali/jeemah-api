@@ -28,7 +28,7 @@ export class CreateBookingDto {
   duration_minute: number;
   discount: number;
 
-  @ApiProperty()
+  @ApiProperty({enum: BookingStatus})
   @IsEnum(BookingStatus)
   booking_status: BookingStatus;
 

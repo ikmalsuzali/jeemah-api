@@ -10,7 +10,7 @@ Table Address {
   city City [not null]
   longitude Float
   latitude Float
-  project_id String
+  project_id String [unique]
   project Project
   created_at DateTime [default: `now()`, not null]
   updated_at DateTime [not null]
@@ -77,7 +77,7 @@ Table Company {
 
 Table PostCategory {
   id String [pk]
-  name String [not null]
+  name String [unique, not null]
   description String
   fallback_image String
   project_id String
@@ -149,13 +149,13 @@ Table Project {
   description String
   currency_id String
   currency Currency
-  financial_detail_id String
+  financial_detail_id String [unique]
   financial_detail ProjectFinancialDetail
   created_at DateTime [default: `now()`, not null]
   updated_at DateTime [not null]
   created_by String
   updated_by String
-  post Post [not null]
+  posts Post [not null]
   user_project_followers UserProjectFollower [not null]
   admin_projects AdminProject [not null]
   project_images ProjectImage [not null]
@@ -232,6 +232,7 @@ Table UserProjectFollower {
   user User [not null]
   project_id String [not null]
   project Project [not null]
+  acceptance_status AcceptanceStatus [not null, default: 'CONFIRMED']
   created_at DateTime [default: `now()`, not null]
   updated_at DateTime [not null]
   created_by String
@@ -332,6 +333,7 @@ Table OrganizationChartAdmin {
   name String [not null]
   user_id String
   user User
+  organization_person_type OrganizationPersonType [not null, default: 'COMMITTEE_MEMBER']
   project_id String [not null]
   project Project [not null]
   created_at DateTime [default: `now()`, not null]
@@ -345,7 +347,7 @@ Table EventRate {
   name String [not null]
   description String
   rate_amount Int [not null]
-  event_id String
+  event_id String [unique]
   event Event
   event_rate_type EventRateType [not null]
   project_id String [not null]
@@ -358,6 +360,7 @@ Table EventRate {
 
 Table Currency {
   id String [pk]
+  name String [not null]
   code String [not null]
   symbol String [not null]
   created_at DateTime [default: `now()`, not null]
@@ -381,7 +384,7 @@ Table Receipt {
   id String [pk]
   reference_no String
   user_id String [not null]
-  payment_id String
+  payment_id String [unique]
   payment Payment
   project_id String [not null]
   created_at DateTime [default: `now()`, not null]
@@ -457,6 +460,20 @@ Enum EventType {
   PUBLIC
   PRIVATE
   INTERNAL
+}
+
+Enum AcceptanceStatus {
+  CONFIRMED
+  PENDING
+  DECLINED
+}
+
+Enum OrganizationPersonType {
+  CHAIRMAN
+  VICE_CHAIRMAN
+  TREASURER
+  SECRETARY
+  COMMITTEE_MEMBER
 }
 
 Ref: Address.city_id > City.id

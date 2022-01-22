@@ -85,7 +85,7 @@ export class ProjectService {
       include: {
         address: has.includes('address'),
         financial_detail: has.includes('financial_detail'),
-        post: has.includes('post'),
+        posts: has.includes('post'),
         user_project_followers: has.includes('user_project_followers'),
         admin_projects: has.includes('admin_projects'),
         project_images: has.includes('project_images'),

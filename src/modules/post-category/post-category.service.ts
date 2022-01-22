@@ -9,8 +9,16 @@ export class PostCategoryService {
   constructor(private readonly prisma: PrismaService) {}
 
   create(createPostCategoryDto: CreatePostCategoryDto) {
+    const { name, description, fallback_image, project_id } = createPostCategoryDto
     return this.prisma.postCategory.create({
-      data: createPostCategoryDto,
+      data: {
+        name,
+        description,
+        fallback_image,
+        project: {
+          connect: { id: project_id }
+        }
+      },
     });
   }
 
@@ -50,11 +58,16 @@ export class PostCategoryService {
   }
 
   update(id: string, updatePostCategoryDto: UpdatePostCategoryDto) {
+    const { name, description, fallback_image } = updatePostCategoryDto
     return this.prisma.postCategory.update({
       where: {
         id: id,
       },
-      data: updatePostCategoryDto,
+      data: {
+        name,
+        description,
+        fallback_image
+      },
     });
   }
 
