@@ -1,7 +1,7 @@
 import { GetLocationProjectDto } from './dto/get-location-project';
 import { RealIP } from 'nestjs-real-ip';
 import { GetProjectDto } from './../project/dto/get-project.dto';
-import { ApiTags } from '@nestjs/swagger';
+import { ApiOperation, ApiTags } from '@nestjs/swagger';
 import {
   Controller,
   Get,
@@ -11,15 +11,13 @@ import {
 } from '@nestjs/common';
 import { ProjectService } from './project.service';
 
-
-
-
 @ApiTags('User Projects')
 @Controller('user/projects')
 export class ProjectUserController {
   constructor(private readonly projectService: ProjectService) {}
 
   @Get()
+  @ApiOperation({ summary: 'AS AN USER, I CAN FIND ALL PROJECTS' })
   findAll(@Query() getProjectDto: GetProjectDto) {
     return this.projectService.findAll(getProjectDto);
   }

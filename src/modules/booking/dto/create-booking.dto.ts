@@ -32,11 +32,11 @@ export class CreateBookingDto {
   @IsEnum(BookingStatus)
   booking_status: BookingStatus;
 
-  @ApiProperty()
+  @ApiProperty({enum: ViewType})
   @IsEnum(ViewType)
   booking_view_type: ViewType;
 
-  @ApiProperty()
+  @ApiProperty({enum: PaymentType})
   @IsOptional()
   payment_type?: PaymentType;
 
@@ -65,6 +65,6 @@ export class CreateBookingDto {
   booking_attachments: string[];
 
   @ApiProperty()
-  @IsString()
+  @IsArray()
   user_booking_attendences: string[];
 }

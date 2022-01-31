@@ -1,5 +1,5 @@
 import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
-import { ApiTags } from '@nestjs/swagger';
+import { ApiOperation, ApiTags } from '@nestjs/swagger';
 import { AdminProjectService } from './admin-project.service';
 import { CreateAdminProjectDto } from './dto/create-admin-project.dto';
 import { GetAdminProjectDto } from './dto/get-admin-project.dto';
@@ -16,11 +16,13 @@ export class AdminProjectController {
   // }
 
   @Get()
+  @ApiOperation({ summary: 'AS AN ADMIN, I SEE ALL PROJECTS THAT BELONG TO ME'})
   findAll(@Body() getAdminProjectDto: GetAdminProjectDto) {
     return this.adminProjectService.findAllByProject(getAdminProjectDto);
   }
 
   @Patch()
+  @ApiOperation({ summary: 'AS AN ADMIN, I CAN ADD ADMINS TO PROJECTS'})
   update(@Body() updateAdminProjectDto: UpdateAdminProjectDto) {
     return this.adminProjectService.update(updateAdminProjectDto);
   }

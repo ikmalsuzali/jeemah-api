@@ -118,26 +118,8 @@ model Post {
   created_by         String?
   created_by_user    User?            @relation(fields: [created_by], references: [id])
   updated_by         String?
-  post_images        PostImage[]
-  post_attachments   PostAttachment[]
-}
-
-model PostImage {
-  id         String   @id @default(cuid())
-  post_id    String
-  post       Post     @relation(fields: [post_id], references: [id])
-  filename   String
-  url        String
-  created_at DateTime @default(now())
-  updated_at DateTime @updatedAt
-}
-
-model PostAttachment {
-  id       String @id @default(cuid())
-  post_id  String
-  post     Post   @relation(fields: [post_id], references: [id])
-  filename String
-  url      String
+  post_images        Attachment[]     @relation("post_image")
+  post_attachments   Attachment[]     @relation("post_attachment")
 }
 
 model UserBookingAttendence {
@@ -160,6 +142,8 @@ model Project {
   email                  String
   description            String?
   currency_id            String?
+  project_logo           Attachment?              @relation("project_logo")
+  project_images         Attachment[]             @relation("project_image")
   currency               Currency?                @relation(fields: [currency_id], references: [id])
   financial_detail_id    String?                  @unique
   financial_detail       ProjectFinancialDetail?  @relation(fields: [financial_detail_id], references: [id])
@@ -170,7 +154,6 @@ model Project {
   posts                  Post[]
   user_project_followers UserProjectFollower[]
   admin_projects         AdminProject[]
-  project_images         ProjectImage[]
   bookings               Booking[]
   events                 Event[]
   admin_project_position OrganizationChartAdmin[]
@@ -220,16 +203,6 @@ model ProjectFinancialDetail {
   created_by   String?
   updated_by   String?
   project      Project?
-}
-
-model ProjectImage {
-  id         String   @id @default(cuid())
-  project_id String
-  project    Project  @relation(fields: [project_id], references: [id])
-  filename   String
-  url        String
-  created_at DateTime @default(now())
-  updated_at DateTime @updatedAt
 }
 
 model State {
@@ -299,6 +272,8 @@ model Booking {
   start_datetime           DateTime
   duration_minute          Int
   discount                 Int                     @default(0)
+  all_day                  Boolean                 @default(false)
+  main_booking_id          String?
   booking_status           BookingStatus           @default(OPEN)
   event_id                 String?
   event                    Event?                  @relation(fields: [event_id], references: [id])
@@ -312,21 +287,10 @@ model Booking {
   updated_at               DateTime                @updatedAt
   created_by               String?
   updated_by               String?
-  booking_images           BookingImage[]
-  booking_attachments      BookingAttachment[]
+  booking_images           Attachment[]            @relation("booking_image")
+  booking_attachments      Attachment[]            @relation("booking_attachment")
   user_booking_attendences UserBookingAttendence[]
   posts                    Post[]
-
-}
-
-model BookingImage {
-  id         String   @id @default(cuid())
-  booking_id String
-  booking    Booking  @relation(fields: [booking_id], references: [id])
-  filename   String
-  url        String
-  created_at DateTime @default(now())
-  updated_at DateTime @updatedAt
 }
 
 // model BookedEvent {
@@ -337,7 +301,6 @@ model BookingImage {
 //   updated_at DateTime @updatedAt
 //   created_by String?
 //   updated_by String?
-
 // }
 
 model Event {
@@ -399,16 +362,6 @@ model Currency {
   project    Project[]
 }
 
-model BookingAttachment {
-  id         String   @id @default(cuid())
-  booking_id String
-  booking    Booking  @relation(fields: [booking_id], references: [id])
-  filename   String
-  url        String
-  created_at DateTime @default(now())
-  updated_at DateTime @updatedAt
-}
-
 model Receipt {
   id           String   @id @default(cuid())
   reference_no String?
@@ -420,6 +373,29 @@ model Receipt {
   updated_at   DateTime @updatedAt
   created_by   String?
   updated_by   String?
+}
+
+model Attachment {
+  id                    String   @id @default(cuid())
+  originalName          String
+  filename              String
+  post_attachment_id    String?
+  post_attachment       Post?    @relation("post_attachment", fields: [post_attachment_id], references: [id])
+  post_image_id         String?
+  post_image            Post?    @relation("post_image", fields: [post_image_id], references: [id])
+  project_logo_id       String?  @unique
+  project_logo          Project? @relation("project_logo", fields: [project_logo_id], references: [id])
+  project_image_id      String?
+  project_image         Project? @relation("project_image", fields: [project_image_id], references: [id])
+  booking_image_id      String?
+  booking_image         Booking? @relation("booking_image", fields: [booking_image_id], references: [id])
+  booking_attachment_id String?
+  booking_attachment    Booking? @relation("booking_attachment", fields: [booking_attachment_id], references: [id])
+  user_id               String?
+  created_at            DateTime @default(now())
+  updated_at            DateTime @updatedAt
+  created_by            String?
+  updated_by            String?
 }
 
 model Invoice {
@@ -503,4 +479,26 @@ enum OrganizationPersonType {
   TREASURER
   SECRETARY
   COMMITTEE_MEMBER
+}
+
+enum BookingRepeatType {
+  DAILY
+  WEEKLY
+  MONTHLY
+  YEARLY
+}
+
+enum BookingDays {
+  MONDAY
+  TUESDAY
+  WEDNESDAY
+  THURSDAY
+  FRIDAY
+  SATURDAY
+  SUNDAY
+}
+
+enum AttachmentType {
+  IMAGE
+  FILE
 }

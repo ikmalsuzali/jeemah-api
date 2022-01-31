@@ -20,16 +20,19 @@ import { PostCategoryModule } from './modules/post-category/post-category.module
 import { AdminProjectModule } from './modules/admin-project/admin-project.module';
 import { OrganizationChartAdminModule } from './modules/organization-chart-admin/organization-chart-admin.module';
 import { PostModule } from './modules/post/post.module';
-import { ImageModule } from './modules/image/image.module';
 import { BookingModule } from './modules/booking/booking.module';
 import { EventModule } from './modules/event/event.module';
 import { EventRateModule } from './modules/event-rate/event-rate.module';
 import { CurrencyModule } from './modules/currency/currency.module';
 import { PaymentModule } from './modules/payment/payment.module';
 import { Ipay88Service } from './modules/ipay88/ipay88.service';
+import { AttachmentModule } from './attachment/attachment.module';
+import { ScheduleModule } from '@nestjs/schedule';
+
 
 @Module({
   imports: [
+    ScheduleModule.forRoot(),
     ConfigModule.forRoot({ isGlobal: true, load: [config] }),
     GraphQLModule.forRootAsync({
       useFactory: async (configService: ConfigService) => {
@@ -65,12 +68,12 @@ import { Ipay88Service } from './modules/ipay88/ipay88.service';
     PostCategoryModule,
     AdminProjectModule,
     OrganizationChartAdminModule,
-    ImageModule,
     BookingModule,
     EventModule,
     EventRateModule,
     CurrencyModule,
     PaymentModule,
+    AttachmentModule,
   ],
   controllers: [],
   providers: [AppService,  AppResolver, DateScalar, Ipay88Service],

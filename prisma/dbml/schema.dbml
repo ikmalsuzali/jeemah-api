@@ -108,26 +108,8 @@ Table Post {
   created_by String
   created_by_user User
   updated_by String
-  post_images PostImage [not null]
-  post_attachments PostAttachment [not null]
-}
-
-Table PostImage {
-  id String [pk]
-  post_id String [not null]
-  post Post [not null]
-  filename String [not null]
-  url String [not null]
-  created_at DateTime [default: `now()`, not null]
-  updated_at DateTime [not null]
-}
-
-Table PostAttachment {
-  id String [pk]
-  post_id String [not null]
-  post Post [not null]
-  filename String [not null]
-  url String [not null]
+  post_images Attachment [not null]
+  post_attachments Attachment [not null]
 }
 
 Table UserBookingAttendence {
@@ -150,6 +132,8 @@ Table Project {
   email String [not null]
   description String
   currency_id String
+  project_logo Attachment
+  project_images Attachment [not null]
   currency Currency
   financial_detail_id String [unique]
   financial_detail ProjectFinancialDetail
@@ -160,7 +144,6 @@ Table Project {
   posts Post [not null]
   user_project_followers UserProjectFollower [not null]
   admin_projects AdminProject [not null]
-  project_images ProjectImage [not null]
   bookings Booking [not null]
   events Event [not null]
   admin_project_position OrganizationChartAdmin [not null]
@@ -205,16 +188,6 @@ Table ProjectFinancialDetail {
   created_by String
   updated_by String
   project Project
-}
-
-Table ProjectImage {
-  id String [pk]
-  project_id String [not null]
-  project Project [not null]
-  filename String [not null]
-  url String [not null]
-  created_at DateTime [default: `now()`, not null]
-  updated_at DateTime [not null]
 }
 
 Table State {
@@ -286,6 +259,8 @@ Table Booking {
   start_datetime DateTime [not null]
   duration_minute Int [not null]
   discount Int [not null, default: 0]
+  all_day Boolean [not null, default: false]
+  main_booking_id String
   booking_status BookingStatus [not null, default: 'OPEN']
   event_id String
   event Event
@@ -299,20 +274,10 @@ Table Booking {
   updated_at DateTime [not null]
   created_by String
   updated_by String
-  booking_images BookingImage [not null]
-  booking_attachments BookingAttachment [not null]
+  booking_images Attachment [not null]
+  booking_attachments Attachment [not null]
   user_booking_attendences UserBookingAttendence [not null]
   posts Post [not null]
-}
-
-Table BookingImage {
-  id String [pk]
-  booking_id String [not null]
-  booking Booking [not null]
-  filename String [not null]
-  url String [not null]
-  created_at DateTime [default: `now()`, not null]
-  updated_at DateTime [not null]
 }
 
 Table Event {
@@ -373,16 +338,6 @@ Table Currency {
   project Project [not null]
 }
 
-Table BookingAttachment {
-  id String [pk]
-  booking_id String [not null]
-  booking Booking [not null]
-  filename String [not null]
-  url String [not null]
-  created_at DateTime [default: `now()`, not null]
-  updated_at DateTime [not null]
-}
-
 Table Receipt {
   id String [pk]
   reference_no String
@@ -390,6 +345,29 @@ Table Receipt {
   payment_id String [unique]
   payment Payment
   project_id String [not null]
+  created_at DateTime [default: `now()`, not null]
+  updated_at DateTime [not null]
+  created_by String
+  updated_by String
+}
+
+Table Attachment {
+  id String [pk]
+  originalName String [not null]
+  filename String [not null]
+  post_attachment_id String
+  post_attachment Post
+  post_image_id String
+  post_image Post
+  project_logo_id String [unique]
+  project_logo Project
+  project_image_id String
+  project_image Project
+  booking_image_id String
+  booking_image Booking
+  booking_attachment_id String
+  booking_attachment Booking
+  user_id String
   created_at DateTime [default: `now()`, not null]
   updated_at DateTime [not null]
   created_by String
@@ -479,6 +457,28 @@ Enum OrganizationPersonType {
   COMMITTEE_MEMBER
 }
 
+Enum BookingRepeatType {
+  DAILY
+  WEEKLY
+  MONTHLY
+  YEARLY
+}
+
+Enum BookingDays {
+  MONDAY
+  TUESDAY
+  WEDNESDAY
+  THURSDAY
+  FRIDAY
+  SATURDAY
+  SUNDAY
+}
+
+Enum AttachmentType {
+  IMAGE
+  FILE
+}
+
 Ref: Address.city_id > City.id
 
 Ref: Address.project_id - Project.id
@@ -503,10 +503,6 @@ Ref: Post.project_id > Project.id
 
 Ref: Post.created_by > User.id
 
-Ref: PostImage.post_id > Post.id
-
-Ref: PostAttachment.post_id > Post.id
-
 Ref: UserBookingAttendence.user_id > User.id
 
 Ref: UserBookingAttendence.booking_id > Booking.id
@@ -518,8 +514,6 @@ Ref: Project.financial_detail_id - ProjectFinancialDetail.id
 Ref: Payment.user_id > User.id
 
 Ref: PaymentItem.payment_id > Payment.id
-
-Ref: ProjectImage.project_id > Project.id
 
 Ref: State.country_id > Country.id
 
@@ -533,8 +527,6 @@ Ref: Booking.event_id > Event.id
 
 Ref: Booking.project_id > Project.id
 
-Ref: BookingImage.booking_id > Booking.id
-
 Ref: Event.event_rate_id > EventRate.id
 
 Ref: Event.project_id > Project.id
@@ -545,6 +537,16 @@ Ref: OrganizationChartAdmin.project_id > Project.id
 
 Ref: EventRate.project_id > Project.id
 
-Ref: BookingAttachment.booking_id > Booking.id
-
 Ref: Receipt.payment_id - Payment.id
+
+Ref: Attachment.post_attachment_id > Post.id
+
+Ref: Attachment.post_image_id > Post.id
+
+Ref: Attachment.project_logo_id - Project.id
+
+Ref: Attachment.project_image_id - Project.id
+
+Ref: Attachment.booking_image_id > Booking.id
+
+Ref: Attachment.booking_attachment_id > Booking.id

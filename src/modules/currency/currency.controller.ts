@@ -6,7 +6,7 @@ import { GetCurrencyDto } from './dto/get-currency.dto';
 import { UpdateCurrencyDto } from './dto/update-currency.dto';
 
 @ApiTags('Currency')
-@Controller('admin/currency')
+@Controller('admin/currencies')
 export class CurrencyController {
   constructor(private readonly currencyService: CurrencyService) {}
 
