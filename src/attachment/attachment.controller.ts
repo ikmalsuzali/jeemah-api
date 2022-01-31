@@ -18,7 +18,6 @@ export class AttachmentController {
   @UseInterceptors(
     FilesInterceptor('files', 20, {
     storage: diskStorage({
-      destination: './files',
       filename: editFileName,
     }),
     fileFilter: fileMimetypeFilter('image'),
