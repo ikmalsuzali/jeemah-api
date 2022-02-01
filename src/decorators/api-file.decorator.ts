@@ -3,8 +3,8 @@ import { FileInterceptor } from '@nestjs/platform-express';
 import { MulterOptions } from '@nestjs/platform-express/multer/interfaces/multer-options.interface';
 import { ApiBody, ApiConsumes } from '@nestjs/swagger';
 import { diskStorage } from 'multer';
-import { editFileName } from 'src/attachment/edit-file-name';
-import { fileMimetypeFilter } from 'src/attachment/file-mimetype-filter';
+import { editFileName } from 'src/modules/attachment/edit-file-name';
+import { fileMimetypeFilter } from 'src/modules/attachment/file-mimetype-filter';
 
 export function ApiFiles(
     fieldName: string = 'files',

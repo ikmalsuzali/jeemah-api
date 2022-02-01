@@ -26,7 +26,7 @@ import { EventRateModule } from './modules/event-rate/event-rate.module';
 import { CurrencyModule } from './modules/currency/currency.module';
 import { PaymentModule } from './modules/payment/payment.module';
 import { Ipay88Service } from './modules/ipay88/ipay88.service';
-import { AttachmentModule } from './attachment/attachment.module';
+import { AttachmentModule } from './modules/attachment/attachment.module';
 import { ScheduleModule } from '@nestjs/schedule';
 
 

@@ -17,7 +17,8 @@ export class AttachmentController {
   @Post('upload/images')
   @UseInterceptors(
     FilesInterceptor('files', 20, {
-    storage: diskStorage({
+      storage: diskStorage({
+      destination: './uploads',
       filename: editFileName,
     }),
     fileFilter: fileMimetypeFilter('image'),
@@ -59,6 +60,7 @@ export class AttachmentController {
   @Post('upload/attachments')
   @UseInterceptors(FileInterceptor('files', {
     storage: diskStorage({
+        destination: './uploads',
         filename: editFileName
     }),
     fileFilter: fileMimetypeFilter('pdf')
