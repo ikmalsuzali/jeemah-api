@@ -10,11 +10,11 @@ import { editFileName } from './edit-file-name';
 import { fileMimetypeFilter } from './file-mimetype-filter';
 
 @ApiTags('Uploads')
-@Controller('attachment')
+@Controller('upload')
 export class AttachmentController {
   constructor(private readonly attachmentService: AttachmentService) { }
   
-  @Post('upload/images')
+  @Post('images')
   @UseInterceptors(
     FilesInterceptor('files', 20, {
       storage: diskStorage({
@@ -57,7 +57,7 @@ export class AttachmentController {
 
   }
 
-  @Post('upload/attachments')
+  @Post('attachments')
   @UseInterceptors(FileInterceptor('files', {
     storage: diskStorage({
         destination: './uploads',

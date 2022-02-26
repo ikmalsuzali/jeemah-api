@@ -28,10 +28,19 @@ import { PaymentModule } from './modules/payment/payment.module';
 import { Ipay88Service } from './modules/ipay88/ipay88.service';
 import { AttachmentModule } from './modules/attachment/attachment.module';
 import { ScheduleModule } from '@nestjs/schedule';
+import { ServeStaticModule } from '@nestjs/serve-static';
+import { join } from 'path';
+
+
+
 
 
 @Module({
   imports: [
+    ServeStaticModule.forRoot({
+      rootPath: join(__dirname, '..', '/uploads'),
+      serveRoot: '/uploads/'
+    }),
     ScheduleModule.forRoot(),
     ConfigModule.forRoot({ isGlobal: true, load: [config] }),
     GraphQLModule.forRootAsync({

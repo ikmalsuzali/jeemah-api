@@ -40,17 +40,18 @@ export class AttachmentService {
   //   return `This action updates a #${id} attachment`;
   // }
 
-   remove(id: string, filename?: string) {
-    console.log(`./uploads/${filename}`)
+  async remove(id: string, filename?: string) {
+    await this.prisma.attachment.delete({
+      where: {id}
+    });
+
     fs.rm(`${process.cwd()}/uploads/${filename}`, err => {
       console.log(err)
     })
-    return this.prisma.attachment.delete({
-      where: {id}
-    });
+  
   }
 
-  @Cron('* */360 * * * *')
+  // @Cron('* 60 * * * *')
   async handleCron() {
     const getNullAttachmentDto = {
       post_attachment_id: null,

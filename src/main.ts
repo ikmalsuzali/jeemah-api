@@ -11,8 +11,10 @@ import {
 } from './configs/config.interface';
 const requestIp = require('request-ip');
 
+
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
+
   // Request ip
   app.use(requestIp.mw())
   // Validation
